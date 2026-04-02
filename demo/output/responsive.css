@@ -1,0 +1,28 @@
+@media (max-width: 1024px) {
+  /* Collapse sidebar to icons only */
+  .sidebar { width: 64px; overflow: hidden; }
+  /* Hide sidebar labels */
+  .sidebar .nav-text { display: none; }
+  /* Stat cards 4 → 2 col */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  /* Hide sidebar completely */
+  .sidebar { display: none; }
+  /* Show mobile bottom nav */
+  .mobile-nav { display: flex; }
+  /* Charts stack vertically */
+  .chart-grid { grid-template-columns: 1fr; }
+  /* Table → card list on mobile */
+  .data-table { display: flex; flex-direction: column; }
+  /* Hide table header */
+  .data-table thead { display: none; }
+  /* Full width without sidebar */
+  .main-content { margin-left: 0; width: 100%; }
+}
+
+@media (max-width: 640px) {
+  /* Stat cards → single column */
+  .stats-grid { grid-template-columns: 1fr; }
+}

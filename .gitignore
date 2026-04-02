@@ -9,3 +9,4 @@ venv/
 *.db
 .DS_Store
 anvil.json
+anvil/mcp_server.py.bak

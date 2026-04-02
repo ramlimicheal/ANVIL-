@@ -51,6 +51,10 @@ class VisionResult:
     edge_similarity: float        # 0.0 - 1.0 (1.0 = identical structure)
     physics_score: float = 0.0
     physics_details: Dict[str, float] = field(default_factory=dict)
+    semantic_score: float = 0.0   # Semantic/CLIP similarity (0-1)
+    semantic_details: Dict = field(default_factory=dict)
+    block_match_score: float = 0.0  # Element IoU matching (0-10)
+    block_match_details: Dict = field(default_factory=dict)
     region_scores: List[RegionScore] = field(default_factory=list)
     worst_regions: List[str] = field(default_factory=list)
     diff_map_path: Optional[str] = None
@@ -62,6 +66,8 @@ class VisionResult:
         lines = [
             f"ANVIL VISION ━━━ {icon} Score: {self.score}/10",
             f"  SSIM:       {self.overall_ssim:.4f} (structural similarity)",
+            f"  Semantic:   {self.semantic_score:.4f} (CLIP/CV semantic match)",
+            f"  BlockMatch: {self.block_match_score}/10 (element IoU)",
             f"  Physics:    {self.physics_score:.4f} (bloom/light decay)",
             f"  Color:      {1.0 - self.color_distance:.4f} (palette match)",
         ]
@@ -71,6 +77,41 @@ class VisionResult:
             lines.append(f"  Diff map:   {self.diff_map_path}")
         lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         return "\n".join(lines)
+
+    def violations_report(self) -> dict:
+        """Machine-readable violations report for AI ingestion."""
+        regions_failing = []
+        for r in self.region_scores:
+            if r.ssim < 0.85:
+                # Add context mapping to help the AI map regions to code sections
+                regions_failing.append({
+                    "label": r.label,
+                    "ssim": r.ssim,
+                    "fix_hint": f"Structural or layout mismatch in region '{r.label}' (score: {r.ssim:.2f}). Adjust sizing, padding, or flex/grid alignment to match reference."
+                })
+        
+        color_violations = []
+        if self.color_distance > 0.05:
+            color_violations.append({
+                "issue": "palette_mismatch",
+                "distance": self.color_distance,
+                "fix_hint": f"Color distribution differs significantly from reference (distance: {self.color_distance:.3f}). Verify that the background and primary foreground colors perfectly match the design system tokens."
+            })
+            
+        physics_violations = []
+        if self.physics_score < 0.7 and self.physics_score > 0.0: # 0.0 usually means not run/skipped
+             physics_violations.append({
+                "issue": "lighting_physics_mismatch",
+                "score": self.physics_score,
+                "fix_hint": "Photometric analysis failed. Ensure drop shadows, gradients, and inner glows match the reference exactly in spread, blur, and opacity."
+            })
+
+        return {
+            "overall_ssim": self.overall_ssim,
+            "regions_failing": regions_failing,
+            "color_violations": color_violations,
+            "physics_violations": physics_violations
+        }
 
 
 class VisualComparator:
@@ -157,7 +198,37 @@ class VisualComparator:
         # 5. Region-based analysis
         region_scores = self._region_analysis(ref_img, gen_img)
 
-        # 6. Generate diff map
+        # 6. Semantic Gate (CLIP or CV-based)
+        semantic_score = 0.0
+        semantic_details = {}
+        try:
+            from anvil.vision.semantic import SemanticComparator
+            sem = SemanticComparator()
+            sem_result = sem.compare(reference_path, generated_path)
+            semantic_score = sem_result.overall_score
+            semantic_details = {
+                "method": sem_result.method,
+                "phash": sem_result.phash_similarity,
+                "hog": sem_result.hog_similarity,
+                "color_lab": sem_result.color_similarity,
+                "frequency": sem_result.frequency_similarity,
+            }
+        except Exception as e:
+            semantic_details = {"error": str(e)}
+
+        # 7. Block-Match Gate (Element IoU)
+        block_match_score = 0.0
+        block_match_details = {}
+        try:
+            from anvil.vision.block_match import BlockMatcher
+            bm = BlockMatcher()
+            bm_result = bm.match(reference_path, generated_path)
+            block_match_score = bm_result.score
+            block_match_details = bm_result.violations_report()
+        except Exception as e:
+            block_match_details = {"error": str(e)}
+
+        # 8. Generate diff map
         diff_path = None
         if diff_output_path:
             diff_path = self._generate_diff_map(ref_img, gen_img, region_scores, diff_output_path)
@@ -166,9 +237,17 @@ class VisualComparator:
         sorted_regions = sorted(region_scores, key=lambda r: r.ssim)
         worst = [f"{r.label} ({r.ssim:.2f})" for r in sorted_regions[:3] if r.ssim < 0.85]
 
-        # Composite score: weighted combination
-        # SSIM (40%), Physics/Lighting (40%), Color (20%)
-        raw = (overall_ssim * 0.40 + physics_score * 0.40 + (1.0 - color_dist) * 0.20) * 10.0
+        # Composite score: 6-layer weighted combination
+        # SSIM (25%) + Semantic (20%) + Block-Match (20%) + Physics (15%) + Color (10%) + Edge (10%)
+        bm_norm = block_match_score / 10.0  # normalize to 0-1
+        raw = (
+            overall_ssim * 0.25 +
+            semantic_score * 0.20 +
+            bm_norm * 0.20 +
+            physics_score * 0.15 +
+            (1.0 - color_dist) * 0.10 +
+            edge_sim * 0.10
+        ) * 10.0
         score = max(0.0, min(10.0, round(raw, 1)))
 
         return VisionResult(
@@ -179,6 +258,10 @@ class VisualComparator:
             edge_similarity=round(edge_sim, 4),
             physics_score=round(physics_score, 4),
             physics_details=physics_res,
+            semantic_score=round(semantic_score, 4),
+            semantic_details=semantic_details,
+            block_match_score=round(block_match_score, 1),
+            block_match_details=block_match_details,
             region_scores=region_scores,
             worst_regions=worst,
             diff_map_path=diff_path,

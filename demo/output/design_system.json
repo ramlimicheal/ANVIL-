@@ -1,0 +1,410 @@
+{
+  "meta": {
+    "page_type": "dashboard",
+    "confidence": 0.6,
+    "image_size": [
+      1280,
+      800
+    ],
+    "is_dark_mode": true
+  },
+  "palette": {
+    "bg_layer_0": "#A0D2C6",
+    "text_primary": "#0B111F",
+    "text_secondary": "#121B2F",
+    "text_tertiary": "#5C6BA6",
+    "accent_primary": "#D23E59"
+  },
+  "typography": {
+    "family_sans": "Inter, system-ui, sans-serif",
+    "family_mono": "JetBrains Mono, Fira Code, monospace",
+    "scale": [
+      14,
+      16,
+      20,
+      24
+    ],
+    "scale_ratio": 1.2,
+    "scale_name": "Minor Third",
+    "base_size": "16px",
+    "weights": {
+      "weight_regular": "400",
+      "weight_medium": "500",
+      "weight_semibold": "600",
+      "weight_bold": "700"
+    }
+  },
+  "geometry": {
+    "spacing_base": "4px",
+    "spacing_scale": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      40,
+      48,
+      64,
+      96
+    ],
+    "radius_surface": "24px",
+    "radius_inner": "16px",
+    "radius_button": "8px",
+    "radius_pill": "99px"
+  },
+  "effects": {
+    "shadow_sm": "0px 8px 1px 0px rgba(0,0,0,0.24)",
+    "shadow_md": "0px 10px 1px 0px rgba(0,0,0,0.33)",
+    "border": "1px solid rgba(255,255,255,0.15)"
+  },
+  "grid": {
+    "columns": 1,
+    "gutter": 0,
+    "margin_left": 0,
+    "margin_right": 0,
+    "column_width": 0
+  },
+  "components": {
+    "components": [
+      {
+        "type": "button",
+        "count": 4,
+        "avg_size": "215x31",
+        "instances": [
+          [
+            513,
+            375,
+            216,
+            31
+          ],
+          [
+            771,
+            375,
+            215,
+            31
+          ],
+          [
+            256,
+            375,
+            215,
+            31
+          ],
+          [
+            1030,
+            375,
+            214,
+            31
+          ]
+        ]
+      },
+      {
+        "type": "container",
+        "count": 6,
+        "avg_size": "108x17",
+        "instances": [
+          [
+            514,
+            314,
+            111,
+            18
+          ],
+          [
+            864,
+            646,
+            109,
+            17
+          ],
+          [
+            864,
+            602,
+            109,
+            17
+          ],
+          [
+            864,
+            558,
+            109,
+            17
+          ],
+          [
+            864,
+            514,
+            109,
+            17
+          ],
+          [
+            264,
+            122,
+            102,
+            18
+          ]
+        ]
+      },
+      {
+        "type": "badge",
+        "count": 2,
+        "avg_size": "50x30",
+        "instances": [
+          [
+            730,
+            249,
+            52,
+            30
+          ],
+          [
+            639,
+            249,
+            48,
+            30
+          ]
+        ]
+      },
+      {
+        "type": "avatar",
+        "count": 4,
+        "avg_size": "41x29",
+        "instances": [
+          [
+            1000,
+            249,
+            41,
+            30
+          ],
+          [
+            910,
+            249,
+            41,
+            30
+          ],
+          [
+            1089,
+            249,
+            42,
+            28
+          ],
+          [
+            820,
+            249,
+            41,
+            28
+          ]
+        ]
+      },
+      {
+        "type": "icon_button",
+        "count": 2,
+        "avg_size": "25x35",
+        "instances": [
+          [
+            265,
+            150,
+            25,
+            37
+          ],
+          [
+            382,
+            151,
+            25,
+            34
+          ]
+        ]
+      },
+      {
+        "type": "stat_card",
+        "count": 1,
+        "avg_size": "186x74",
+        "instances": [
+          [
+            987,
+            143,
+            186,
+            74
+          ]
+        ]
+      },
+      {
+        "type": "chip",
+        "count": 1,
+        "avg_size": "71x37",
+        "instances": [
+          [
+            405,
+            150,
+            71,
+            37
+          ]
+        ]
+      }
+    ],
+    "total_instances": 20,
+    "types_found": [
+      "button",
+      "container",
+      "badge",
+      "avatar",
+      "icon_button",
+      "stat_card",
+      "chip"
+    ]
+  },
+  "icons": {
+    "icons": [
+      {
+        "bounds": [
+          1000,
+          249,
+          41,
+          30
+        ],
+        "size": 48,
+        "style": "filled",
+        "library": "lucide",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          1089,
+          249,
+          42,
+          28
+        ],
+        "size": 48,
+        "style": "filled",
+        "library": "lucide",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          820,
+          249,
+          41,
+          28
+        ],
+        "size": 48,
+        "style": "filled",
+        "library": "lucide",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          265,
+          150,
+          25,
+          37
+        ],
+        "size": 32,
+        "style": "filled",
+        "library": "phosphor",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          382,
+          151,
+          25,
+          34
+        ],
+        "size": 32,
+        "style": "filled",
+        "library": "phosphor",
+        "confidence": 0.7
+      }
+    ],
+    "dominant_style": "filled",
+    "suggested_library": "lucide",
+    "icon_size": 48,
+    "total": 5
+  },
+  "responsive": {
+    "page_type": "dashboard",
+    "breakpoints": {
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "container_max_width": "1249px",
+    "rules": [
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".sidebar",
+        "behavior": "Collapse sidebar to icons only",
+        "css": "width: 64px; overflow: hidden;"
+      },
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".sidebar .nav-text",
+        "behavior": "Hide sidebar labels",
+        "css": "display: none;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".sidebar",
+        "behavior": "Hide sidebar completely",
+        "css": "display: none;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".mobile-nav",
+        "behavior": "Show mobile bottom nav",
+        "css": "display: flex;"
+      },
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".stats-grid",
+        "behavior": "Stat cards 4 \u2192 2 col",
+        "css": "grid-template-columns: repeat(2, 1fr);"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".stats-grid",
+        "behavior": "Stat cards \u2192 single column",
+        "css": "grid-template-columns: 1fr;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".chart-grid",
+        "behavior": "Charts stack vertically",
+        "css": "grid-template-columns: 1fr;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".data-table",
+        "behavior": "Table \u2192 card list on mobile",
+        "css": "display: flex; flex-direction: column;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".data-table thead",
+        "behavior": "Hide table header",
+        "css": "display: none;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".main-content",
+        "behavior": "Full width without sidebar",
+        "css": "margin-left: 0; width: 100%;"
+      }
+    ]
+  },
+  "taste_vector": {
+    "temperature": 0.2,
+    "density": 0.67,
+    "formality": 0.7,
+    "energy": 0.9,
+    "age": 0.8,
+    "price": 0.7
+  }
+}

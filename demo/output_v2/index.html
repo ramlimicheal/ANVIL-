@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANVIL Generated — Dashboard</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* ANVIL Auto-Generated Styles — Layout-Driven V2 */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --accent-primary: #D23E59;
+  --bg-layer-0: #A0D2C6;
+  --text-primary: #0B111F;
+  --text-secondary: #121B2F;
+  --text-tertiary: #5C6BA6;
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: JetBrains Mono, Fira Code, monospace;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+  --radius-surface: 24px;
+  --radius-inner: 16px;
+  --radius-button: 8px;
+  --radius-pill: 99px;
+  --shadow-sm: 0px 8px 1px 0px rgba(0,0,0,0.24);
+  --shadow-md: 0px 10px 1px 0px rgba(0,0,0,0.33);
+  --border: 1px solid rgba(255,255,255,0.15);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-layer-0, #A0D2C6);
+  color: var(--text-primary, #0B111F);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.anvil-184 {
+  min-height: 397px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anvil-175 {
+  min-height: 51px;
+  display: flex;
+  flex-direction: column;
+}
+
+.anvil-75 {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.anvil-76 {
+  background: var(--text-primary);
+  font-size: 33px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 4px 64px 12px 16px;
+}
+
+.anvil-77 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-74 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-73 {
+  background: var(--text-primary);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.anvil-176 {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
+}
+
+.anvil-70 {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.anvil-71 {
+  background: var(--text-primary);
+  font-size: 38px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 4px 96px 16px 16px;
+}
+
+.anvil-72 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-69 {
+  background: var(--text-primary);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.anvil-177 {
+  min-height: 76px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 96px;
+}
+
+.anvil-66 {
+  border-radius: var(--radius-surface);
+  border: var(--border, 1px solid rgba(255,255,255,0.08));
+}
+
+.anvil-64 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-63 {
+  background: var(--accent-primary);
+}
+
+.anvil-61 {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 8px 32px;
+}
+
+.anvil-60 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  padding: 4px 12px;
+}
+
+.anvil-59 {
+  background: var(--accent-primary);
+}
+
+.anvil-58 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-178 {
+  min-height: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+
+.anvil-56 {
+  background: var(--text-primary);
+  font-size: 14px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-179 {
+  min-height: 37px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 96px;
+}
+
+.anvil-55 {
+  background: var(--text-primary);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.anvil-54 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  padding: 4px 12px;
+}
+
+.anvil-53 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  padding: 4px 12px;
+}
+
+.anvil-52 {
+  border-radius: 50%;
+  width: 41px;
+  height: 28px;
+}
+
+.anvil-51 {
+  border-radius: 50%;
+  width: 41px;
+  height: 30px;
+}
+
+.anvil-50 {
+  border-radius: 50%;
+  width: 41px;
+  height: 30px;
+}
+
+.anvil-49 {
+  border-radius: 50%;
+  width: 42px;
+  height: 28px;
+}
+
+.anvil-48 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-180 {
+  min-height: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 96px;
+}
+
+.anvil-47 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-45 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-44 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-181 {
+  min-height: 27px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 96px;
+}
+
+.anvil-43 {
+  background: var(--text-primary);
+  font-size: 20px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-42 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-41 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-40 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-39 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-182 {
+  min-height: 14px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 96px;
+}
+
+.anvil-183 {
+  min-height: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.anvil-34 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-button);
+  color: var(--bg-layer-0);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+}
+
+.anvil-33 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-button);
+  color: var(--bg-layer-0);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+}
+
+.anvil-32 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-button);
+  color: var(--bg-layer-0);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+}
+
+.anvil-31 {
+  background: var(--accent-primary);
+  border-radius: var(--radius-button);
+  color: var(--bg-layer-0);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+}
+
+.anvil-190 {
+  min-height: 209px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anvil-185 {
+  min-height: 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 96px;
+}
+
+.anvil-29 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-28 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-27 {
+  background: var(--text-primary);
+  font-size: 18px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-186 {
+  min-height: 19px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 96px;
+}
+
+.anvil-24 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-23 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-22 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-21 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-18 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-187 {
+  min-height: 15px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 64px;
+}
+
+.anvil-17 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-16 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-15 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-12 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-188 {
+  min-height: 21px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 96px;
+}
+
+.anvil-11 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-10 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-9 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-6 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-189 {
+  min-height: 17px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 96px;
+}
+
+.anvil-5 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-4 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.anvil-3 {
+  background: var(--text-primary);
+  font-size: 15px;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+.shadow-sm { box-shadow: 0px 8px 1px 0px rgba(0,0,0,0.24); }
+.shadow-md { box-shadow: 0px 10px 1px 0px rgba(0,0,0,0.33); }
+
+@media (max-width: 1024px) {
+  /* Collapse sidebar to icons only */
+  .sidebar { width: 64px; overflow: hidden; }
+  /* Hide sidebar labels */
+  .sidebar .nav-text { display: none; }
+  /* Stat cards 4 → 2 col */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  /* Hide sidebar completely */
+  .sidebar { display: none; }
+  /* Show mobile bottom nav */
+  .mobile-nav { display: flex; }
+  /* Charts stack vertically */
+  .chart-grid { grid-template-columns: 1fr; }
+  /* Table → card list on mobile */
+  .data-table { display: flex; flex-direction: column; }
+  /* Hide table header */
+  .data-table thead { display: none; }
+  /* Full width without sidebar */
+  .main-content { margin-left: 0; width: 100%; }
+}
+
+@media (max-width: 640px) {
+  /* Stat cards → single column */
+  .stats-grid { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+  <section class="anvil-184">
+    <section class="anvil-175">
+      <div class="anvil-75">
+        <p class="anvil-76">
+          <p class="anvil-77">Body text content</p>
+        </p>
+      </div>
+      <p class="anvil-74">Body text content</p>
+      <p class="anvil-73">Heading Text</p>
+    </section>
+    <section class="anvil-176">
+      <div class="anvil-70">
+        <p class="anvil-71">
+          <p class="anvil-72">Body text content</p>
+        </p>
+      </div>
+      <p class="anvil-69">Heading Text</p>
+    </section>
+    <div class="anvil-68"></div>
+    <section class="anvil-177">
+      <div class="anvil-67"></div>
+      <div class="anvil-66"><div style="font-size:12px;opacity:0.6;margin-bottom:4px">Metric</div><div style="font-size:24px;font-weight:600">$0.00</div><div style="font-size:11px;color:var(--accent-primary,#5e6ad2);margin-top:4px">+0%</div></div>
+      <div class="anvil-65"></div>
+      <p class="anvil-64">Body text content</p>
+      <button class="anvil-63" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5"><circle cx="12" cy="12" r="10"/></svg></button>
+      <div class="anvil-61">
+        <div class="anvil-62"></div>
+      </div>
+      <span class="anvil-60">Tag</span>
+      <button class="anvil-59" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5"><circle cx="12" cy="12" r="10"/></svg></button>
+    </section>
+    <p class="anvil-58">Body text content</p>
+    <section class="anvil-178">
+      <div class="anvil-57"></div>
+      <p class="anvil-56">Body text content</p>
+    </section>
+    <section class="anvil-179">
+      <p class="anvil-55">Heading Text</p>
+      <span class="anvil-54">Label</span>
+      <span class="anvil-53">Label</span>
+      <div class="anvil-52"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+      <div class="anvil-51"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+      <div class="anvil-50"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+      <div class="anvil-49"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+    </section>
+    <p class="anvil-48">Body text content</p>
+    <section class="anvil-180">
+      <p class="anvil-47">Body text content</p>
+      <div class="anvil-46"></div>
+      <p class="anvil-45">Body text content</p>
+      <p class="anvil-44">Body text content</p>
+    </section>
+    <section class="anvil-181">
+      <p class="anvil-43">Body text content</p>
+      <p class="anvil-42">Body text content</p>
+      <p class="anvil-41">Body text content</p>
+      <p class="anvil-40">Body text content</p>
+      <p class="anvil-39">Body text content</p>
+    </section>
+    <section class="anvil-182">
+      <div class="anvil-38"></div>
+      <div class="anvil-37"></div>
+      <div class="anvil-36"></div>
+      <div class="anvil-35"></div>
+    </section>
+    <section class="anvil-183">
+      <button class="anvil-34" type="button">Action</button>
+      <button class="anvil-33" type="button">Action</button>
+      <button class="anvil-32" type="button">Action</button>
+      <button class="anvil-31" type="button">Action</button>
+      <div class="anvil-30"></div>
+    </section>
+  </section>
+  <section class="anvil-190">
+    <section class="anvil-185">
+      <p class="anvil-29">Body text content</p>
+      <p class="anvil-28">Body text content</p>
+      <p class="anvil-27">Body text content</p>
+      <div class="anvil-26"></div>
+      <div class="anvil-25"></div>
+    </section>
+    <section class="anvil-186">
+      <p class="anvil-24">Body text content</p>
+      <p class="anvil-23">Body text content</p>
+      <p class="anvil-22">Body text content</p>
+      <p class="anvil-21">Body text content</p>
+      <div class="anvil-20"></div>
+    </section>
+    <div class="anvil-19"></div>
+    <p class="anvil-18">Body text content</p>
+    <section class="anvil-187">
+      <p class="anvil-17">Body text content</p>
+      <p class="anvil-16">Body text content</p>
+      <p class="anvil-15">Body text content</p>
+      <div class="anvil-14"></div>
+    </section>
+    <div class="anvil-13"></div>
+    <p class="anvil-12">Body text content</p>
+    <section class="anvil-188">
+      <p class="anvil-11">Body text content</p>
+      <p class="anvil-10">Body text content</p>
+      <p class="anvil-9">Body text content</p>
+      <div class="anvil-8"></div>
+      <div class="anvil-7"></div>
+    </section>
+    <p class="anvil-6">Body text content</p>
+    <section class="anvil-189">
+      <p class="anvil-5">Body text content</p>
+      <p class="anvil-4">Body text content</p>
+      <p class="anvil-3">Body text content</p>
+      <div class="anvil-2"></div>
+      <div class="anvil-1"></div>
+    </section>
+  </section>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANVIL Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;color:#e0e4ef;font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+.header{background:linear-gradient(135deg,#12162a 0%,#1a1f3a 100%);border-bottom:1px solid #2a2f4a;padding:24px 40px;display:flex;align-items:center;gap:16px}
+.header h1{font-size:28px;font-weight:700;background:linear-gradient(90deg,#7c8aff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .tag{background:#1e2740;border:1px solid #3a4060;border-radius:6px;padding:4px 12px;font-size:12px;color:#8090b0}
+.container{max-width:1400px;margin:0 auto;padding:32px 40px}
+.phase{margin-bottom:40px}
+.phase-title{font-size:20px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.phase-title .num{background:#5e6ad2;color:#fff;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.grid{display:grid;gap:20px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.card{background:#12162a;border:1px solid #2a2f4a;border-radius:12px;padding:20px;transition:border-color .2s}
+.card:hover{border-color:#5e6ad2}
+.card h3{font-size:14px;font-weight:600;color:#8090b0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.img-container{border-radius:12px;overflow:hidden;border:1px solid #2a2f4a}
+.img-container img{width:100%;display:block}
+.color-row{display:flex;gap:12px;flex-wrap:wrap}
+.color-swatch{display:flex;align-items:center;gap:8px;background:#1a1f3a;border-radius:8px;padding:8px 12px}
+.color-swatch .dot{width:28px;height:28px;border-radius:6px;border:1px solid rgba(255,255,255,.1)}
+.color-swatch .info{font-size:12px}
+.color-swatch .hex{font-weight:600;font-family:'JetBrains Mono',monospace}
+.color-swatch .role{color:#8090b0;font-size:11px}
+.spacing-scale{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.spacing-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.spacing-bar{background:#5e6ad2;border-radius:3px;width:24px;min-height:4px}
+.spacing-label{font-size:10px;color:#8090b0;font-family:monospace}
+.taste-bar-container{margin-bottom:12px}
+.taste-label{display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px}
+.taste-label .dim{color:#8090b0}
+.taste-label .val{font-weight:600;font-family:monospace}
+.taste-bar{height:8px;background:#1a1f3a;border-radius:4px;overflow:hidden}
+.taste-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.component-tag{display:inline-block;background:#1a1f3a;border:1px solid #2a2f4a;border-radius:6px;padding:4px 10px;font-size:12px;margin:3px}
+.component-tag .count{color:#5e6ad2;font-weight:600;margin-left:4px}
+pre{background:#0d1020;border:1px solid #2a2f4a;border-radius:8px;padding:16px;font-size:12px;overflow-x:auto;font-family:'JetBrains Mono',monospace;line-height:1.6;color:#b0b8d0;max-height:400px;overflow-y:auto}
+.token-line .prop{color:#7c8aff}
+.token-line .val{color:#a78bfa}
+.stat{text-align:center;padding:16px}
+.stat .num{font-size:32px;font-weight:700;color:#5e6ad2}
+.stat .label{font-size:12px;color:#8090b0;margin-top:4px}
+.icon-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.icon-chip{background:#1a1f3a;border:1px solid #2a2f4a;border-radius:6px;padding:6px 12px;font-size:12px}
+.arrow{font-size:40px;color:#5e6ad2;text-align:center;margin:20px 0}
+.output-files{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.file-chip{background:#0d1020;border:1px solid #2a2f4a;border-radius:8px;padding:10px 16px;font-size:13px;font-family:monospace;display:flex;align-items:center;gap:8px}
+.file-chip .icon{color:#5e6ad2}
+.responsive-rule{background:#1a1f3a;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:12px;display:flex;gap:12px}
+.responsive-rule .bp{color:#5e6ad2;font-weight:600;min-width:40px}
+.responsive-rule .desc{color:#b0b8d0}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ANVIL</h1>
+  <div class="tag">Screenshot → Design System</div>
+  <div class="tag">Live Demo</div>
+</div>
+
+<div class="container">
+
+<!-- PHASE 1: INPUT -->
+<div class="phase">
+  <div class="phase-title"><div class="num">1</div>Input Screenshot</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Original Target</h3>
+      <div class="img-container">
+        <img src="test_dashboard.png" alt="CoinLytix Dashboard">
+      </div>
+    </div>
+    <div class="card">
+      <h3>What ANVIL Sees</h3>
+      <div class="grid grid-4" style="margin-top:8px">
+        <div class="stat"><div class="num">5</div><div class="label">Colors</div></div>
+        <div class="stat"><div class="num">20</div><div class="label">Components</div></div>
+        <div class="stat"><div class="num">5</div><div class="label">Icons</div></div>
+        <div class="stat"><div class="num">7</div><div class="label">Types</div></div>
+      </div>
+      <div style="margin-top:16px">
+        <h3>Detected Components</h3>
+        <div>
+          <span class="component-tag">button<span class="count">x5</span></span>
+          <span class="component-tag">container<span class="count">x4</span></span>
+          <span class="component-tag">badge<span class="count">x3</span></span>
+          <span class="component-tag">avatar<span class="count">x4</span></span>
+          <span class="component-tag">icon_button<span class="count">x2</span></span>
+          <span class="component-tag">stat_card<span class="count">x1</span></span>
+          <span class="component-tag">chip<span class="count">x1</span></span>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <h3>Page Classification</h3>
+        <div style="font-size:14px;margin-top:8px">
+          <strong style="color:#5e6ad2">dashboard</strong> 
+          <span style="color:#8090b0">— dark mode, sidebar layout, 1280x800</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- PHASE 2: EXTRACTED DESIGN SYSTEM -->
+<div class="phase">
+  <div class="phase-title"><div class="num">2</div>Extracted Design System</div>
+
+  <div class="grid grid-2">
+    <!-- Colors -->
+    <div class="card">
+      <h3>Color Palette (CIELAB K-Means)</h3>
+      <div class="color-row">
+        <div class="color-swatch">
+          <div class="dot" style="background:#0B111F"></div>
+          <div class="info"><div class="hex">#0B111F</div><div class="role">text-primary</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="dot" style="background:#121B2F"></div>
+          <div class="info"><div class="hex">#121B2F</div><div class="role">text-secondary</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="dot" style="background:#5C6BA6"></div>
+          <div class="info"><div class="hex">#5C6BA6</div><div class="role">text-tertiary</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="dot" style="background:#A0D2C6"></div>
+          <div class="info"><div class="hex">#A0D2C6</div><div class="role">bg-layer-0</div></div>
+        </div>
+        <div class="color-swatch">
+          <div class="dot" style="background:#D23E59"></div>
+          <div class="info"><div class="hex">#D23E59</div><div class="role">accent-primary</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="card">
+      <h3>Typography</h3>
+      <div style="font-size:13px;line-height:2">
+        <div><strong>Classification:</strong> sans-serif</div>
+        <div><strong>Scale Ratio:</strong> 1.25 (Major Third)</div>
+        <div><strong>Font Stack:</strong> Inter, system-ui, sans-serif</div>
+        <div><strong>Mono:</strong> JetBrains Mono, Fira Code, monospace</div>
+        <div><strong>Weights:</strong> 400, 500, 600, 700</div>
+        <div><strong>Sizes:</strong> 12, 14, 16, 20, 24, 32, 40, 48px</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:20px">
+    <!-- Spacing -->
+    <div class="card">
+      <h3>Spacing Grid (Base: 4px)</h3>
+      <div class="spacing-scale">
+        <div class="spacing-item"><div class="spacing-bar" style="height:4px"></div><div class="spacing-label">4</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:8px"></div><div class="spacing-label">8</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:12px"></div><div class="spacing-label">12</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:16px"></div><div class="spacing-label">16</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:24px"></div><div class="spacing-label">24</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:32px"></div><div class="spacing-label">32</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:40px"></div><div class="spacing-label">40</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:48px"></div><div class="spacing-label">48</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:64px"></div><div class="spacing-label">64</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="height:80px"></div><div class="spacing-label">96</div></div>
+      </div>
+      <div style="margin-top:16px">
+        <h3>Border Radius</h3>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <div style="width:48px;height:48px;background:#1a1f3a;border:1px solid #5e6ad2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px">8px</div>
+          <div style="width:48px;height:48px;background:#1a1f3a;border:1px solid #5e6ad2;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:10px">16px</div>
+          <div style="width:48px;height:48px;background:#1a1f3a;border:1px solid #5e6ad2;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:10px">24px</div>
+          <div style="width:80px;height:36px;background:#1a1f3a;border:1px solid #5e6ad2;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:10px">pill</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Effects -->
+    <div class="card">
+      <h3>Visual Effects</h3>
+      <div style="font-size:13px;line-height:2">
+        <div><strong>Shadows:</strong> 2 levels (sm, md)</div>
+        <div><strong>Shadow SM:</strong> <code style="color:#a78bfa">0px 8px 1px rgba(0,0,0,0.24)</code></div>
+        <div><strong>Shadow MD:</strong> <code style="color:#a78bfa">0px 10px 1px rgba(0,0,0,0.33)</code></div>
+        <div><strong>Border:</strong> <code style="color:#a78bfa">1px solid rgba(255,255,255,0.15)</code></div>
+        <div><strong>Glassmorphism:</strong> Detected</div>
+        <div><strong>Gradients:</strong> 1 detected</div>
+      </div>
+      <div style="margin-top:16px">
+        <h3>Icons</h3>
+        <div class="icon-row" style="margin-top:8px">
+          <div class="icon-chip">5 icons detected</div>
+          <div class="icon-chip">Style: <strong>filled</strong></div>
+          <div class="icon-chip">Library: <strong>Lucide</strong></div>
+          <div class="icon-chip">Size: <strong>48px</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- PHASE 3: TASTE VECTOR -->
+<div class="phase">
+  <div class="phase-title"><div class="num">3</div>6D Taste Vector</div>
+  <div class="card" style="max-width:700px">
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Temperature</span><span class="val">0.20 — Cool</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:20%;background:linear-gradient(90deg,#60a5fa,#3b82f6)"></div></div>
+    </div>
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Density</span><span class="val">0.67 — Dense</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:67%;background:linear-gradient(90deg,#a78bfa,#7c3aed)"></div></div>
+    </div>
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Formality</span><span class="val">0.70 — Formal</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:70%;background:linear-gradient(90deg,#6366f1,#4f46e5)"></div></div>
+    </div>
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Energy</span><span class="val">0.90 — Energetic</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:90%;background:linear-gradient(90deg,#f59e0b,#ef4444)"></div></div>
+    </div>
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Age</span><span class="val">0.80 — Modern</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:80%;background:linear-gradient(90deg,#10b981,#059669)"></div></div>
+    </div>
+    <div class="taste-bar-container">
+      <div class="taste-label"><span class="dim">Price</span><span class="val">0.70 — Premium</span></div>
+      <div class="taste-bar"><div class="taste-fill" style="width:70%;background:linear-gradient(90deg,#f59e0b,#d97706)"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- PHASE 4: OUTPUT -->
+<div class="phase">
+  <div class="phase-title"><div class="num">4</div>Generated Output Files</div>
+  <div class="output-files">
+    <div class="file-chip"><span class="icon">CSS</span> tokens.css</div>
+    <div class="file-chip"><span class="icon">JS</span> tailwind.config.js</div>
+    <div class="file-chip"><span class="icon">JSON</span> design_system.json</div>
+    <div class="file-chip"><span class="icon">CSS</span> responsive.css</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>tokens.css</h3>
+      <pre>/* ANVIL Design Tokens — Auto-extracted */
+:root {
+  /* Colors */
+  --accent-primary: #D23E59;
+  --bg-layer-0: #A0D2C6;
+  --text-primary: #0B111F;
+  --text-secondary: #121B2F;
+  --text-tertiary: #5C6BA6;
+
+  /* Typography */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: JetBrains Mono, Fira Code, monospace;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spacing */
+  --spacing-base: 4px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+
+  /* Border Radius */
+  --radius-surface: 24px;
+  --radius-inner: 16px;
+  --radius-button: 8px;
+  --radius-pill: 99px;
+
+  /* Effects */
+  --shadow-sm: 0px 8px 1px rgba(0,0,0,0.24);
+  --shadow-md: 0px 10px 1px rgba(0,0,0,0.33);
+  --border: 1px solid rgba(255,255,255,0.15);
+}</pre>
+    </div>
+    <div class="card">
+      <h3>Responsive Rules (Auto-Generated)</h3>
+      <div class="responsive-rule"><span class="bp">lg</span><span class="desc">Collapse sidebar to icons only (width: 64px)</span></div>
+      <div class="responsive-rule"><span class="bp">lg</span><span class="desc">Hide sidebar labels (display: none)</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Hide sidebar completely</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Show mobile bottom nav</span></div>
+      <div class="responsive-rule"><span class="bp">lg</span><span class="desc">Stat cards 4 → 2 columns</span></div>
+      <div class="responsive-rule"><span class="bp">sm</span><span class="desc">Stat cards → single column</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Charts stack vertically</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Table → card list on mobile</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Hide table header</span></div>
+      <div class="responsive-rule"><span class="bp">md</span><span class="desc">Full width without sidebar</span></div>
+
+      <div style="margin-top:20px">
+        <h3>Pipeline Summary</h3>
+        <div style="font-size:13px;line-height:2.2;margin-top:8px">
+          <div>1. <strong>Extract</strong> — OpenCV + CIELAB K-Means → palette, structure, typography</div>
+          <div>2. <strong>Compile</strong> — tokens.css + tailwind.config.js + responsive.css</div>
+          <div>3. <strong>Generate</strong> — HTML/CSS from extracted structure</div>
+          <div>4. <strong>Verify</strong> — TASTE Guard checks CIEDE2000 color fidelity</div>
+          <div>5. <strong>Vision</strong> — SSIM compares generated vs original screenshot</div>
+          <div>6. <strong>Loop</strong> — Refine until pixel-perfect (up to N iterations)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

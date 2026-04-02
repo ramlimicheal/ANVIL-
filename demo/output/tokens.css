@@ -1,0 +1,41 @@
+/* ANVIL Design Tokens — Auto-extracted */
+:root {
+  /* Colors */
+  --accent-primary: #D23E59;
+  --bg-layer-0: #A0D2C6;
+  --text-primary: #0B111F;
+  --text-secondary: #121B2F;
+  --text-tertiary: #5C6BA6;
+
+  /* Typography */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: JetBrains Mono, Fira Code, monospace;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spacing */
+  --spacing-base: 4px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+
+  /* Border Radius */
+  --radius-surface: 24px;
+  --radius-inner: 16px;
+  --radius-button: 8px;
+  --radius-pill: 99px;
+
+  /* Effects */
+  --shadow-sm: 0px 8px 1px 0px rgba(0,0,0,0.24);
+  --shadow-md: 0px 10px 1px 0px rgba(0,0,0,0.33);
+  --border: 1px solid rgba(255,255,255,0.15);
+}

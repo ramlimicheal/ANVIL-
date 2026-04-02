@@ -1,39 +1,93 @@
-# ⚒️ ANVIL
+# ⚒️ ANVIL v5
 
-**Forge AI Code Into Production Steel.**
+**The Deterministic Physics Engine for AI-Generated UI.**
 
-The verification layer for AI-generated code. Three layers of mathematical proof between your AI assistant and your codebase.
+ANVIL does not generate code. It is the independent mathematical examiner that holds AI accountable. 14 validation dimensions. 3-tier short-circuit gate architecture. Zero trust in LLM self-evaluation.
 
 ```
-AI generates code → ANVIL verifies it → You get production-ready output
+Screenshot → AI builds code → ANVIL mathematically proves it's correct → ships
 ```
 
 ---
 
-## Architecture
+## What Makes It Different
+
+| Tool | Approach | Result |
+|---|---|---|
+| Vercel v0 | AI generates → AI self-reviews | "Looks good to me" |
+| Cursor | AI writes → AI checks | Fox guarding henhouse |
+| Devin | Autonomous agent, no verification layer | Hope-based engineering |
+| **ANVIL** | AI builds → **Independent math proves it** | Numbers don't negotiate |
+
+ANVIL treats UI replication as a **compilation problem**, not a conversation. The browser renderer is the target machine. CSS properties are the instruction set. SSIM/CIEDE2000/Z3 are the verification passes.
+
+---
+
+## Architecture: 3-Tier Short-Circuit DAG
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  LAYER 1: TASTE GUARD (Frontend Verification)            │
-│  • Design token compliance (color, spacing, typography)  │
-│  • WCAG accessibility contrast checking                  │
-│  • 6D TasteVector quantification                         │
-│  • 4 built-in profiles: linear, cyberpunk, soft, minimal │
-├─────────────────────────────────────────────────────────┤
-│  LAYER 2: Z3 GUARD (Backend Verification)                │
-│  • Division by zero detection                            │
-│  • Integer overflow proof (BitVec arithmetic)            │
-│  • Array bounds checking                                 │
-│  • Auth logic verification (OR vs AND bug detection)     │
-│  • TOCTOU race condition detection                       │
-├─────────────────────────────────────────────────────────┤
-│  LAYER 3: SEMANTIC COMPRESSION (Token Optimization)      │
-│  • Filler phrase removal                                 │
-│  • Code instruction deduplication                        │
-│  • Technical abbreviation                                │
-│  • 3 levels: light (15%), medium (30%), aggressive (50%) │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  TIER 1: Symbolic & Lexical (~50ms, NO BROWSER)          │
+│  ─────────────────────────────────                       │
+│  TASTE CSS Lexer:    Token compliance, 4px grid, WCAG   │
+│  6D Taste Vector:    Temperature/Density/Formality/      │
+│                      Energy/Age/Price enforcement         │
+│  Design Token Match: Palette, typography, spacing        │
+│                                                          │
+│  SHORT-CIRCUIT: taste_score < 4.0 → FAIL instantly       │
+│  Why waste 1200ms on screenshots if CSS is wrong?        │
+├──────────────────────────────────────────────────────────┤
+│  TIER 2: Headless DOM Extraction (~400ms, NO SCREENSHOTS)│
+│  ─────────────────────────────────                       │
+│  Biomechanics:       Fitts's Law, 44×44px touch targets, │
+│                      destructive action proximity        │
+│  Chaos Gate:         7 data mutations (3x text, RTL,     │
+│                      15x children, empty, compound word) │
+│                                                          │
+│  SHORT-CIRCUIT: ANY boolean gate fails → score = 0       │
+│  Layout is brittle or ergonomically unsafe.              │
+├──────────────────────────────────────────────────────────┤
+│  TIER 3: Vision Physics (~1200ms, GPU MATRICES)          │
+│  Only runs on code that passed Tiers 1-2                 │
+│  ─────────────────────────────────                       │
+│  SSIM:               Wang et al. windowed similarity     │
+│  Semantic:           pHash + HOG + Lab + DCT             │
+│                      (auto-upgrades to CLIP)             │
+│  Block-Match:        Element IoU via Hungarian algorithm │
+│  Saliency:           Spectral Residual + Jensen-Shannon  │
+│  Physics:            Fresnel + Bloom + Specular decay    │
+│  Color:              Bhattacharyya histogram distance    │
+│  Edge:               Sobel + normalized cross-correlation│
+│  Gestalt:            Optical mass centroid vs geometric   │
+│                                                          │
+│  Composite score ≥ 8.0 → PASS                           │
+└──────────────────────────────────────────────────────────┘
 ```
+
+**Key insight:** A layout with SSIM 0.99 that breaks with German text (Chaos Gate) or has 12px touch targets (Biomechanics) scores **zero**. Boolean gates kill before continuous metrics run.
+
+---
+
+## 14 Validation Dimensions
+
+| # | Dimension | Module | Algorithm |
+|---|---|---|---|
+| 1 | **SSIM** | `vision/compare.py` | Wang et al. 2004 windowed luminance |
+| 2 | **Semantic** | `vision/semantic.py` | pHash + HOG + Lab + DCT (→ CLIP) |
+| 3 | **Block-Match** | `vision/block_match.py` | Connected components + Hungarian IoU |
+| 4 | **Saliency** | `vision/saliency.py` | Spectral Residual + JSD attention map |
+| 5 | **Gestalt** | `vision/gestalt.py` | Optical mass centroid (cv2.moments) |
+| 6 | **Physics** | `vision/physics.py` | Fresnel + inverse-square bloom decay |
+| 7 | **Color** | `vision/compare.py` | Bhattacharyya R/G/B histograms |
+| 8 | **Edge** | `vision/compare.py` | Sobel gradient cross-correlation |
+| 9 | **Region Grid** | `vision/compare.py` | 4×6 region SSIM breakdown |
+| 10 | **Chaos Gate** | `chaos/fuzzer.py` | 7 data mutations + overflow detection |
+| 11 | **Biomechanics** | `taste/biomechanics.py` | Fitts's Law + 44px touch targets |
+| 12 | **TASTE** | `taste/verifier.py` | CSS lexer + CIEDE2000 color distance |
+| 13 | **6D Vector** | `taste/tensor.py` | Temp/Density/Formality/Energy/Age/Price |
+| 14 | **Z3 Proofs** | `z3_guard/provers.py` | Div-zero + overflow + auth + TOCTOU |
+
+---
 
 ## Quick Start
 
@@ -42,148 +96,162 @@ AI generates code → ANVIL verifies it → You get production-ready output
 cd ANVIL
 pip install -e .
 
-# Initialize in your project
-anvil init
-
-# Verify frontend CSS/components
+# Verify frontend CSS
 anvil taste src/styles/ --profile linear
 
 # Prove backend logic
 anvil prove src/api/
 
-# Compress prompts
-anvil compress prompt.txt --level medium
+# Combined score (A+ to F)
+anvil score src/components/Card.tsx
 
 # Watch files (verify on save)
 anvil guard src/
 
-# Combined score
-anvil score src/components/Pricing.tsx
-
-# Start REST API daemon
-anvil daemon --port 8084
+# Compress LLM prompts
+anvil compress prompt.txt --level medium
 ```
 
-## CLI Commands
+## MCP Integration (IDE)
 
-| Command | Description |
+ANVIL runs as an MCP server inside Windsurf/Cursor/VS Code. 13 tools:
+
+| Tool | Description |
 |---|---|
-| `anvil init` | Create `anvil.json` config in current directory |
-| `anvil taste <path>` | Run TASTE Guard (design verification) |
-| `anvil prove <path>` | Run Z3 Guard (logic verification) |
-| `anvil compress <file>` | Semantic token compression |
-| `anvil guard [path]` | File watcher — verify on every save |
-| `anvil score <file>` | Combined ANVIL score (A+ to F) |
-| `anvil daemon` | Start FastAPI REST server |
+| `anvil_taste` | TASTE frontend verification |
+| `anvil_prove` | Z3 backend logic proof |
+| `anvil_verify` | Auto-routes frontend/backend |
+| `anvil_score` | Combined A+ to F grading |
+| `anvil_vision` | Pixel-level screenshot comparison |
+| `anvil_validate_output` | **Core gate** — 3-tier DAG validation |
+| `anvil_replicate` | Extract design tokens from screenshot |
+| `anvil_extract` | Design system extraction |
+| `anvil_compress` | Semantic token compression |
+| `anvil_tokenize` | CSS tokenizer diagnostic |
+| `anvil_guard` | Directory scan |
+| `anvil_init` | Project initialization |
+| `anvil_profiles` | List design profiles |
 
-## API Endpoints
+### Replication Workflow
 
-Start with `anvil daemon --port 8084`, then:
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/anvil/status` | Health check + config |
-| POST | `/anvil/verify` | Full verification (auto-routes layers) |
-| POST | `/anvil/taste` | Design verification only |
-| POST | `/anvil/z3` | Logic proof only |
-| POST | `/anvil/compress` | Token compression |
-| POST | `/anvil/batch` | Verify multiple files |
-| POST | `/anvil/score` | Combined ANVIL score |
-
-### Example Request
-
-```bash
-curl -X POST http://localhost:8084/anvil/verify \
-  -H "Content-Type: application/json" \
-  -d '{"code": ".card { color: #333; padding: 13px; }", "filepath": "style.css"}'
 ```
+1. anvil_replicate(screenshot.png)
+   → Returns: palette, typography, spacing, taste_vector
+
+2. AI builds HTML/CSS using extracted tokens
+
+3. anvil_validate_output(reference.png, output.html, design_system.json)
+   → Tier 1: TASTE lexer (~50ms) — short-circuits if tokens wrong
+   → Tier 2: Biomechanics + Chaos (~400ms) — short-circuits if brittle
+   → Tier 3: Vision matrices (~1200ms) — SSIM/Semantic/BlockMatch/Saliency
+   → Returns: PASS/FAIL + per-dimension violations + fix hints
+
+4. AI fixes violations → goto step 3
+```
+
+---
 
 ## Design Profiles
 
-TASTE Guard ships with 4 built-in profiles:
-
 | Profile | Vibe | Accent | Radius |
 |---|---|---|---|
-| `linear` | Minimal, Professional | `#5E6AD2` | 12px |
+| `linear` | Professional, Clean | `#5E6AD2` | 12px |
 | `cyberpunk` | Dark, Neon, Angular | `#FF0040` | 0px |
 | `soft` | Warm, Round, Pastel | `#FFB6C1` | 24px |
-| `minimal` | Clean, Sparse | `#000000` | 8px |
+| `minimal` | Sparse, Monochrome | `#000000` | 8px |
 
-Custom profiles: save a StyleTensor JSON and set `custom_tensor_path` in `anvil.json`.
+Custom: save a StyleTensor JSON and set `custom_tensor_path` in `anvil.json`.
 
 ## Z3 Provers
 
-| Prover | Catches |
+| Prover | Detection |
 |---|---|
-| `div_zero` | Unguarded division, literal `/0` |
-| `overflow` | Integer multiplication wrap-around |
-| `bounds` | Array access without length check |
-| `auth` | OR-vs-AND role check bugs, missing returns after deny |
+| `div_zero` | AST-based unguarded division |
+| `overflow` | 64-bit BitVec multiplication wrapping |
+| `bounds` | Array access without len() guard |
+| `auth` | OR-vs-AND role checks, missing deny returns |
 | `concurrency` | Check-then-act race conditions without locks |
 
-## Test Results
-
-```
-70 passed, 0 failed (4.68s)
-
-Layer 1 TASTE:  34 tests (tensor, verifier, scorer)
-Layer 2 Z3:     12 tests (div_zero, auth, concurrency, bounds, unified)
-Layer 3 Compress: 10 tests (light, medium, aggressive, dedup, score)
-Integration:    14 tests (config routing, guard, summary)
-```
+---
 
 ## Project Structure
 
 ```
 ANVIL/
 ├── anvil/
-│   ├── __init__.py          # Package root
-│   ├── __main__.py          # python -m anvil
-│   ├── cli.py               # Unified CLI
-│   ├── daemon.py            # FastAPI REST server
-│   ├── config.py            # Config + file routing
-│   ├── taste/               # Layer 1: Frontend Verification
-│   │   ├── tensor.py        # StyleTensor + 4 profiles
-│   │   ├── verifier.py      # CSS/Tailwind checker
-│   │   └── scorer.py        # Aesthetic quality scoring
-│   ├── z3_guard/            # Layer 2: Backend Verification
-│   │   └── provers.py       # 5 Z3 provers
-│   ├── compress/            # Layer 3: Token Optimization
-│   │   └── engine.py        # Semantic compressor
-│   └── watcher/             # File System Guard
-│       └── guard.py         # Watchdog + routing
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py                  # Unified CLI
+│   ├── daemon.py               # FastAPI REST server
+│   ├── config.py               # Config + file routing
+│   ├── mcp_server.py           # MCP server (13 tools)
+│   │
+│   ├── taste/                  # Frontend Verification
+│   │   ├── tensor.py           # StyleTensor + 6D vector + 4 profiles
+│   │   ├── verifier.py         # CSS lexer + CIEDE2000 + WCAG
+│   │   ├── scorer.py           # Aesthetic quality scoring
+│   │   └── biomechanics.py     # Fitts's Law + touch targets [NEW v5]
+│   │
+│   ├── z3_guard/               # Backend Verification
+│   │   └── provers.py          # 5 AST-based Z3 provers
+│   │
+│   ├── vision/                 # Pixel-Level Comparison
+│   │   ├── compare.py          # SSIM + Edge + Color + Region grid
+│   │   ├── physics.py          # Photonic verification (Fresnel/Bloom)
+│   │   ├── block_match.py      # Element IoU + Hungarian matching [NEW v5]
+│   │   ├── semantic.py         # pHash/HOG/Lab/DCT (→ CLIP) [NEW v5]
+│   │   ├── saliency.py         # Spectral Residual + JSD [NEW v5]
+│   │   └── gestalt.py          # Optical mass centroid [NEW v5]
+│   │
+│   ├── chaos/                  # Layout Resilience Testing [NEW v5]
+│   │   └── fuzzer.py           # 7 data mutations + overflow detection
+│   │
+│   ├── extract/                # Design System Extraction
+│   │   ├── design_system.py    # OpenCV-based token extraction
+│   │   └── responsive.py       # Responsive framework detection
+│   │
+│   ├── compress/               # Token Optimization
+│   │   └── engine.py           # Semantic compressor (3 levels)
+│   │
+│   └── generate/               # ARCHIVED (v4+)
+│       └── _ARCHIVED/          # Generation removed — ANVIL validates only
+│
 ├── tests/
-│   └── test_anvil.py        # 70 tests
-├── pyproject.toml           # Package config
-├── ANVIL_SEED_PITCH_SCRIPT.md
-├── ROADMAP.md
+│   └── test_anvil.py           # 82 tests
+├── pyproject.toml
 └── README.md
 ```
 
-## Configuration (anvil.json)
+## Dependencies
 
-```json
-{
-  "project_name": "my-saas",
-  "taste": {
-    "profile": "linear",
-    "spacing_base": 4,
-    "allowed_fonts": ["Inter", "system-ui", "sans-serif"],
-    "wcag_level": "AA"
-  },
-  "z3": {
-    "enabled_provers": ["div_zero", "overflow", "bounds", "auth", "concurrency"],
-    "timeout_ms": 5000
-  },
-  "compression": {
-    "level": "medium"
-  },
-  "watch_paths": ["src/", "app/", "lib/"],
-  "ignore_patterns": ["node_modules", "__pycache__", ".git", "dist"]
-}
+```
+opencv-python          # Vision pipeline (SSIM, block-match, saliency, gestalt)
+numpy                  # Matrix operations
+scipy                  # Hungarian algorithm, curve fitting
+Pillow                 # Image I/O
+z3-solver              # Formal verification
+playwright             # Headless browser (chaos gate, biomechanics)
+tiktoken               # Token counting (compression)
+```
+
+**Optional (auto-upgrade):**
+```
+torch + transformers   # Enables real CLIP ViT-B/32 in semantic.py
 ```
 
 ---
 
-*ANVIL — Forge AI Code Into Production Steel.*
+## Version History
+
+| Version | Changes |
+|---|---|
+| **v5** | 14 dimensions, 3-tier DAG, block-match, semantic, saliency, gestalt, chaos gate, biomechanics, 8 production bug fixes |
+| **v4** | Generation archived, pure validation architecture, validate_output gate |
+| **v3** | AST-based Z3 provers, hardened TASTE verifier, 6D taste vector |
+| **v2** | Design system extractor, code generator |
+| **v1** | TASTE + Z3 + compression, CLI + REST API |
+
+---
+
+*ANVIL — The Deterministic Physics Engine for AI-Generated UI.*
 *© 2026 Ramli T. Michael. All rights reserved.*

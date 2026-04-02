@@ -4,8 +4,18 @@ Lossless meaning compression: same intent, fewer tokens.
 """
 
 import re
+import math
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
+
+try:
+    import tiktoken
+    _ENCODER = tiktoken.encoding_for_model("gpt-4")
+    HAS_TIKTOKEN = True
+except (ImportError, Exception):
+    _ENCODER = None
+    HAS_TIKTOKEN = False
 
 
 @dataclass
@@ -91,7 +101,7 @@ class SemanticCompressor:
 
     def compress(self, text: str) -> CompressionResult:
         """Compress text semantically. Returns CompressionResult."""
-        original_tokens = self._estimate_tokens(text)
+        original_tokens = self._count_tokens(text)
         techniques = []
         result = text
 
@@ -125,7 +135,11 @@ class SemanticCompressor:
             result = self._abbreviate(result)
             techniques.append("abbreviation")
 
-        compressed_tokens = self._estimate_tokens(result)
+            # Level 3: TF-IDF sentence pruning
+            result = self._tfidf_compress(result)
+            techniques.append("tfidf_pruning")
+
+        compressed_tokens = self._count_tokens(result)
         reduction = ((original_tokens - compressed_tokens) / max(original_tokens, 1)) * 100
 
         return CompressionResult(
@@ -197,6 +211,43 @@ class SemanticCompressor:
             return result
         return text
 
+    def _tfidf_compress(self, text: str) -> str:
+        """Remove low-importance sentences using TF-IDF scoring.
+        Keeps sentences with high information density, removes filler sentences."""
+        sentences = re.split(r'(?<=[.!?])\s+', text)
+        if len(sentences) <= 3:
+            return text
+
+        # Build document frequency across sentences
+        word_doc_freq: Counter = Counter()
+        sentence_words = []
+        for sent in sentences:
+            words = set(re.findall(r'\w+', sent.lower()))
+            sentence_words.append(words)
+            for w in words:
+                word_doc_freq[w] += 1
+
+        n_docs = len(sentences)
+        # Score each sentence by sum of TF-IDF weights
+        scored = []
+        for i, (sent, words) in enumerate(zip(sentences, sentence_words)):
+            if not words:
+                scored.append((0, i, sent))
+                continue
+            word_counts = Counter(re.findall(r'\w+', sent.lower()))
+            score = 0.0
+            for w, tf in word_counts.items():
+                df = word_doc_freq.get(w, 1)
+                idf = math.log((n_docs + 1) / (df + 1)) + 1
+                score += (tf / len(words)) * idf
+            scored.append((score, i, sent))
+
+        # Keep top 70% of sentences by importance
+        scored.sort(key=lambda x: x[0], reverse=True)
+        keep_count = max(2, int(len(scored) * 0.7))
+        kept = sorted(scored[:keep_count], key=lambda x: x[1])  # Restore order
+        return ' '.join(s[2] for s in kept)
+
     def _abbreviate(self, text: str) -> str:
         """Replace common verbose patterns with abbreviations."""
         abbreviations = [
@@ -220,9 +271,15 @@ class SemanticCompressor:
         return text
 
     @staticmethod
-    def _estimate_tokens(text: str) -> int:
-        """Rough token estimate: ~4 chars per token for English."""
-        return max(1, len(text) // 4)
+    def _count_tokens(text: str) -> int:
+        """Count tokens using tiktoken BPE (cl100k_base). Falls back to
+        word-boundary heuristic if tiktoken unavailable."""
+        if HAS_TIKTOKEN and _ENCODER is not None:
+            return len(_ENCODER.encode(text))
+        # Fallback: split on whitespace + punctuation boundaries
+        # More accurate than len//4: counts words, numbers, and punctuation separately
+        tokens = re.findall(r"\w+|[^\w\s]", text)
+        return max(1, len(tokens))
 
     def score(self, text: str) -> dict:
         """Score compression potential and return analysis."""

@@ -9,6 +9,7 @@ import math
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 from .tensor import StyleTensor
+from .css_tokenizer import CSSTokenizer
 
 
 @dataclass
@@ -36,25 +37,138 @@ class TasteVerifier:
         self._build_color_index()
 
     def _build_color_index(self):
-        """Pre-compute HSL values for all palette colors."""
+        """Pre-compute CIE Lab* values for all palette colors."""
         for name, value in self.tensor.palette.items():
             rgb = self._parse_color(value)
             if rgb:
-                self._color_cache[name] = rgb
+                self._color_cache[name] = self._srgb_to_lab(rgb)
 
     # ─── Main Verification Entry Point ────────────────────────────
 
+    @staticmethod
+    def _is_css_file(filepath: str) -> bool:
+        return filepath.lower().endswith((".css", ".scss", ".less"))
+
     def verify(self, code: str, filepath: str = "") -> List[Violation]:
-        """Run all TASTE checks against code. Returns violations list."""
+        """Run all TASTE checks against code. Returns violations list.
+        Uses CSS tokenizer for .css/.scss files (eliminates false positives
+        from comments, strings, URLs). Falls back to regex for JSX/Vue/etc."""
         violations = []
-        violations.extend(self._check_colors(code, filepath))
-        violations.extend(self._check_spacing(code, filepath))
-        violations.extend(self._check_typography(code, filepath))
-        violations.extend(self._check_border_radius(code, filepath))
+
+        # Use proper CSS tokenizer for CSS files
+        if self._is_css_file(filepath):
+            violations.extend(self._check_colors_tokenized(code, filepath))
+            violations.extend(self._check_spacing_tokenized(code, filepath))
+            violations.extend(self._check_typography_tokenized(code, filepath))
+            violations.extend(self._check_radius_tokenized(code, filepath))
+        else:
+            violations.extend(self._check_colors(code, filepath))
+            violations.extend(self._check_spacing(code, filepath))
+            violations.extend(self._check_typography(code, filepath))
+            violations.extend(self._check_border_radius(code, filepath))
+
         violations.extend(self._check_accessibility(code, filepath))
         violations.extend(self._check_hardcoded_values(code, filepath))
         violations.extend(self._check_inline_styles(code, filepath))
         violations.extend(self._check_design_formality(code, filepath))
+        return violations
+
+    # ─── CSS Tokenizer-Based Checks (no false positives) ──────────
+
+    def _check_colors_tokenized(self, code: str, filepath: str) -> List[Violation]:
+        """Check colors using CSS tokenizer — excludes comments, strings, URLs."""
+        violations = []
+        tokenizer = CSSTokenizer(code)
+        colors = tokenizer.get_colors()
+
+        for color_val, line_num in colors:
+            if not self._is_in_palette(color_val):
+                nearest = self._find_nearest_palette_color(color_val)
+                if nearest:
+                    name, dist = nearest
+                    if dist > 2.3:  # CIEDE2000 JND threshold
+                        violations.append(Violation(
+                            severity="warning" if dist < 12.0 else "error",
+                            category="color",
+                            message=f"Hardcoded color {color_val} not in design system. "
+                                    f"Nearest: --{name.replace('_', '-')} (\u0394E={dist:.1f})",
+                            file=filepath, line=line_num,
+                            found=color_val,
+                            expected=f"var(--{name.replace('_', '-')})",
+                        ))
+        return violations
+
+    def _check_spacing_tokenized(self, code: str, filepath: str) -> List[Violation]:
+        """Check spacing using CSS tokenizer."""
+        violations = []
+        tokenizer = CSSTokenizer(code)
+        grid = self.tensor.get_spacing_grid()
+        base = int(self.tensor.geometry.get("spacing_base", "4").replace("px", ""))
+
+        for prop, value, line_num in tokenizer.get_spacing_values():
+            px_matches = re.findall(r'(-?\d+)px', value)
+            for px_str in px_matches:
+                px_val = int(px_str)
+                if px_val == 0:
+                    continue
+                abs_val = abs(px_val)
+                if abs_val not in grid and abs_val > 2:
+                    nearest = min(grid, key=lambda x: abs(x - abs_val)) if grid else abs_val
+                    violations.append(Violation(
+                        severity="warning",
+                        category="spacing",
+                        message=f"{prop}: {px_val}px not on {base}px grid. Nearest: {nearest}px",
+                        file=filepath, line=line_num,
+                        found=f"{px_val}px",
+                        expected=f"{nearest}px",
+                    ))
+        return violations
+
+    def _check_typography_tokenized(self, code: str, filepath: str) -> List[Violation]:
+        """Check fonts using CSS tokenizer."""
+        violations = []
+        tokenizer = CSSTokenizer(code)
+        allowed_fonts = self.tensor.get_allowed_fonts()
+        allowed_lower = [f.lower() for f in allowed_fonts]
+        generic_families = {"inherit", "initial", "unset", "sans-serif", "serif",
+                           "monospace", "system-ui", "cursive", "fantasy"}
+
+        for fonts_str, line_num in tokenizer.get_fonts():
+            declared = [f.strip().strip("'\"" ) for f in fonts_str.split(",")]
+            for font in declared:
+                if font.lower() not in allowed_lower and font.lower() not in generic_families:
+                    violations.append(Violation(
+                        severity="error",
+                        category="typography",
+                        message=f"Font '{font}' not in design system. "
+                                f"Allowed: {', '.join(allowed_fonts[:3])}",
+                        file=filepath, line=line_num,
+                        found=font,
+                        expected=allowed_fonts[0] if allowed_fonts else "Inter",
+                    ))
+        return violations
+
+    def _check_radius_tokenized(self, code: str, filepath: str) -> List[Violation]:
+        """Check border-radius using CSS tokenizer."""
+        violations = []
+        tokenizer = CSSTokenizer(code)
+        allowed = set(self.tensor.get_allowed_radii())
+        allowed.update({"0px", "0", "50%", "100%"})
+
+        for value, line_num in tokenizer.get_radii():
+            parts = value.split()
+            for part in parts:
+                part = part.strip()
+                if part and part not in allowed and not part.startswith("var("):
+                    violations.append(Violation(
+                        severity="info",
+                        category="radius",
+                        message=f"border-radius: {part} not in design tokens. "
+                                f"Allowed: {', '.join(sorted(allowed))}",
+                        file=filepath, line=line_num,
+                        found=part,
+                        expected=", ".join(sorted(allowed)),
+                    ))
         return violations
 
     def score(self, code: str) -> dict:
@@ -96,9 +210,9 @@ class TasteVerifier:
                     nearest = self._find_nearest_palette_color(hex_val)
                     if nearest:
                         name, dist = nearest
-                        if dist > 0.02:  # Tolerance: very close colors are OK
+                        if dist > 2.3:  # CIEDE2000 JND threshold
                             violations.append(Violation(
-                                severity="warning" if dist < 0.15 else "error",
+                                severity="warning" if dist < 12.0 else "error",
                                 category="color",
                                 message=f"Hardcoded color {hex_val} not in design system. Nearest: --{name.replace('_', '-')}",
                                 file=filepath, line=line_num,
@@ -114,7 +228,7 @@ class TasteVerifier:
                     nearest = self._find_nearest_palette_color(hex_val)
                     if nearest:
                         name, dist = nearest
-                        if dist > 0.02:
+                        if dist > 2.3:
                             violations.append(Violation(
                                 severity="warning",
                                 category="color",
@@ -135,16 +249,17 @@ class TasteVerifier:
         return False
 
     def _find_nearest_palette_color(self, hex_color: str) -> Optional[Tuple[str, float]]:
-        """Find closest palette color by perceptual distance. Returns (name, distance)."""
+        """Find closest palette color by CIEDE2000 perceptual distance. Returns (name, ΔE)."""
         rgb = self._parse_color(hex_color)
         if not rgb:
             return None
 
+        lab = self._srgb_to_lab(rgb)
         best_name = None
         best_dist = float("inf")
 
-        for name, palette_rgb in self._color_cache.items():
-            dist = self._color_distance(rgb, palette_rgb)
+        for name, palette_lab in self._color_cache.items():
+            dist = self._ciede2000(lab, palette_lab)
             if dist < best_dist:
                 best_dist = dist
                 best_name = name
@@ -154,9 +269,101 @@ class TasteVerifier:
         return None
 
     @staticmethod
-    def _color_distance(c1: Tuple[float, ...], c2: Tuple[float, ...]) -> float:
-        """Perceptual color distance (CIE76-like in sRGB space)."""
-        return math.sqrt(sum((a - b) ** 2 for a, b in zip(c1, c2)))
+    def _srgb_to_lab(rgb: Tuple[float, float, float]) -> Tuple[float, float, float]:
+        """Convert sRGB [0,1] to CIE Lab* via D65 XYZ."""
+        # sRGB → linear RGB (inverse gamma)
+        def linearize(c):
+            return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+        r_lin, g_lin, b_lin = linearize(rgb[0]), linearize(rgb[1]), linearize(rgb[2])
+
+        # Linear RGB → XYZ (sRGB D65 matrix)
+        x = r_lin * 0.4124564 + g_lin * 0.3575761 + b_lin * 0.1804375
+        y = r_lin * 0.2126729 + g_lin * 0.7151522 + b_lin * 0.0721750
+        z = r_lin * 0.0193339 + g_lin * 0.1191920 + b_lin * 0.9503041
+
+        # XYZ → Lab* (D65 white point: 0.95047, 1.0, 1.08883)
+        def f(t):
+            return t ** (1/3) if t > 0.008856 else (7.787 * t) + (16 / 116)
+
+        fx = f(x / 0.95047)
+        fy = f(y / 1.0)
+        fz = f(z / 1.08883)
+
+        L = (116 * fy) - 16
+        a = 500 * (fx - fy)
+        b = 200 * (fy - fz)
+        return (L, a, b)
+
+    @staticmethod
+    def _ciede2000(lab1: Tuple[float, float, float], lab2: Tuple[float, float, float]) -> float:
+        """CIEDE2000 color difference — the gold standard for perceptual distance.
+        Returns ΔE₀₀. JND ≈ 2.3, noticeable ≈ 5, different ≈ 12+."""
+        L1, a1, b1 = lab1
+        L2, a2, b2 = lab2
+
+        # Step 1: Calculate C'ab, h'ab
+        C1 = math.sqrt(a1**2 + b1**2)
+        C2 = math.sqrt(a2**2 + b2**2)
+        C_avg = (C1 + C2) / 2
+        C_avg7 = C_avg**7
+        G = 0.5 * (1 - math.sqrt(C_avg7 / (C_avg7 + 25**7)))
+
+        a1p = a1 * (1 + G)
+        a2p = a2 * (1 + G)
+        C1p = math.sqrt(a1p**2 + b1**2)
+        C2p = math.sqrt(a2p**2 + b2**2)
+
+        h1p = math.degrees(math.atan2(b1, a1p)) % 360
+        h2p = math.degrees(math.atan2(b2, a2p)) % 360
+
+        # Step 2: Calculate ΔL', ΔC', ΔH'
+        dLp = L2 - L1
+        dCp = C2p - C1p
+
+        if C1p * C2p == 0:
+            dhp = 0
+        elif abs(h2p - h1p) <= 180:
+            dhp = h2p - h1p
+        elif h2p - h1p > 180:
+            dhp = h2p - h1p - 360
+        else:
+            dhp = h2p - h1p + 360
+
+        dHp = 2 * math.sqrt(C1p * C2p) * math.sin(math.radians(dhp / 2))
+
+        # Step 3: Calculate CIEDE2000
+        Lp_avg = (L1 + L2) / 2
+        Cp_avg = (C1p + C2p) / 2
+
+        if C1p * C2p == 0:
+            hp_avg = h1p + h2p
+        elif abs(h1p - h2p) <= 180:
+            hp_avg = (h1p + h2p) / 2
+        elif h1p + h2p < 360:
+            hp_avg = (h1p + h2p + 360) / 2
+        else:
+            hp_avg = (h1p + h2p - 360) / 2
+
+        T = (1
+             - 0.17 * math.cos(math.radians(hp_avg - 30))
+             + 0.24 * math.cos(math.radians(2 * hp_avg))
+             + 0.32 * math.cos(math.radians(3 * hp_avg + 6))
+             - 0.20 * math.cos(math.radians(4 * hp_avg - 63)))
+
+        SL = 1 + 0.015 * (Lp_avg - 50)**2 / math.sqrt(20 + (Lp_avg - 50)**2)
+        SC = 1 + 0.045 * Cp_avg
+        SH = 1 + 0.015 * Cp_avg * T
+
+        Cp_avg7 = Cp_avg**7
+        RT = (-2 * math.sqrt(Cp_avg7 / (Cp_avg7 + 25**7))
+              * math.sin(math.radians(60 * math.exp(-((hp_avg - 275) / 25)**2))))
+
+        dE = math.sqrt(
+            (dLp / SL)**2 + (dCp / SC)**2 + (dHp / SH)**2
+            + RT * (dCp / SC) * (dHp / SH)
+        )
+        return round(dE, 4)
 
     @staticmethod
     def _parse_color(value: str) -> Optional[Tuple[float, float, float]]:
@@ -560,6 +767,150 @@ class TasteVerifier:
                 file=filepath, line=0,
                 found=f"{rule_count} rules",
                 expected=f"Higher rule density",
+            ))
+
+        # ── Temperature: warm/cool color bias ──
+        # Low temperature (<0.3) = cool palette (blues, grays). Warm colors are violations.
+        # High temperature (>0.7) = warm palette (reds, oranges, yellows). Cool-only is a violation.
+        temperature = tv.get("temperature", 0.5)
+        hex_colors = re.findall(r'#([0-9a-fA-F]{6})', code)
+        if hex_colors and abs(temperature - 0.5) > 0.15:
+            warm_count = 0
+            cool_count = 0
+            for hc in hex_colors:
+                try:
+                    r = int(hc[0:2], 16) / 255.0
+                    g = int(hc[2:4], 16) / 255.0
+                    b = int(hc[4:6], 16) / 255.0
+                    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+                    hue_deg = h * 360
+                    if s > 0.1:  # Skip near-grays
+                        if 0 <= hue_deg <= 60 or 300 <= hue_deg <= 360:
+                            warm_count += 1
+                        elif 180 <= hue_deg <= 270:
+                            cool_count += 1
+                except ValueError:
+                    continue
+
+            chromatic = warm_count + cool_count
+            if chromatic > 0:
+                warm_ratio = warm_count / chromatic
+                if temperature < 0.35 and warm_ratio > 0.5:
+                    violations.append(Violation(
+                        severity="warning",
+                        category="temperature",
+                        message=f"Taste temperature {temperature:.1f} (cool) but "
+                                f"{warm_ratio:.0%} of chromatic colors are warm. "
+                                f"Expect blues/grays for this design system.",
+                        file=filepath, line=0,
+                        found=f"{warm_ratio:.0%} warm colors",
+                        expected="Cool-dominant palette",
+                    ))
+                elif temperature > 0.65 and warm_ratio < 0.3:
+                    violations.append(Violation(
+                        severity="warning",
+                        category="temperature",
+                        message=f"Taste temperature {temperature:.1f} (warm) but "
+                                f"only {warm_ratio:.0%} warm colors found. "
+                                f"Expect warmer hues for this design system.",
+                        file=filepath, line=0,
+                        found=f"{warm_ratio:.0%} warm colors",
+                        expected="Warm-dominant palette",
+                    ))
+
+        # ── Energy: animation/transition density ──
+        # High energy (>0.7) = expects transitions, transforms, animations
+        # Low energy (<0.3) = static design, animations are violations
+        energy = tv.get("energy", 0.5)
+        transition_count = len(re.findall(r'transition|animation|@keyframes|transform', code, re.IGNORECASE))
+        if energy < 0.3 and transition_count > 2:
+            violations.append(Violation(
+                severity="info",
+                category="energy",
+                message=f"Taste energy {energy:.1f} (static/calm) but found "
+                        f"{transition_count} animation/transition declarations. "
+                        f"This design system prefers minimal motion.",
+                file=filepath, line=0,
+                found=f"{transition_count} motion properties",
+                expected="Minimal or no animations",
+            ))
+        elif energy > 0.7 and transition_count == 0 and rule_count > 3:
+            violations.append(Violation(
+                severity="info",
+                category="energy",
+                message=f"Taste energy {energy:.1f} (dynamic) but no transitions "
+                        f"or animations found. This design system expects motion.",
+                file=filepath, line=0,
+                found="0 motion properties",
+                expected="Transitions and/or animations",
+            ))
+
+        # ── Age: modern CSS feature usage ──
+        # High age (>0.7) = modern/cutting-edge. Expects modern features.
+        # Low age (<0.3) = conservative/legacy-safe.
+        age = tv.get("age", 0.5)
+        modern_features = len(re.findall(
+            r'(?:container-type|:has\(|:is\(|:where\(|aspect-ratio|gap:|'
+            r'grid-template|place-items|backdrop-filter|color-mix|light-dark)',
+            code, re.IGNORECASE,
+        ))
+        legacy_patterns = len(re.findall(
+            r'(?:-webkit-|-moz-|-ms-|float:\s*(?:left|right)|clear:\s*both)',
+            code, re.IGNORECASE,
+        ))
+        if age > 0.8 and legacy_patterns > 2 and modern_features == 0:
+            violations.append(Violation(
+                severity="info",
+                category="age",
+                message=f"Taste age {age:.1f} (modern) but found {legacy_patterns} "
+                        f"legacy patterns and 0 modern CSS features. "
+                        f"Use grid, :has(), container queries, etc.",
+                file=filepath, line=0,
+                found=f"{legacy_patterns} legacy, {modern_features} modern",
+                expected="Modern CSS features",
+            ))
+        elif age < 0.3 and modern_features > 3:
+            violations.append(Violation(
+                severity="info",
+                category="age",
+                message=f"Taste age {age:.1f} (conservative) but found "
+                        f"{modern_features} cutting-edge CSS features. "
+                        f"May break in older browsers.",
+                file=filepath, line=0,
+                found=f"{modern_features} modern features",
+                expected="Conservative, widely-supported CSS",
+            ))
+
+        # ── Price: visual richness/complexity ──
+        # High price (>0.7) = premium feel. Expects shadows, gradients, layering.
+        # Low price (<0.3) = budget/casual. Minimal decoration.
+        price = tv.get("price", 0.5)
+        premium_count = len(re.findall(
+            r'(?:box-shadow|text-shadow|linear-gradient|radial-gradient|'
+            r'backdrop-filter|filter:|opacity:|clip-path|mask-image)',
+            code, re.IGNORECASE,
+        ))
+        if price > 0.7 and premium_count == 0 and rule_count > 3:
+            violations.append(Violation(
+                severity="info",
+                category="price",
+                message=f"Taste price {price:.1f} (premium) but no shadows, "
+                        f"gradients, or visual effects found. "
+                        f"Premium design systems use depth and layering.",
+                file=filepath, line=0,
+                found="0 premium effects",
+                expected="Shadows, gradients, or visual depth",
+            ))
+        elif price < 0.3 and premium_count > 4:
+            violations.append(Violation(
+                severity="info",
+                category="price",
+                message=f"Taste price {price:.1f} (minimal/budget) but found "
+                        f"{premium_count} premium visual effects. "
+                        f"This design system prefers flat, simple styling.",
+                file=filepath, line=0,
+                found=f"{premium_count} premium effects",
+                expected="Flat, minimal styling",
             ))
 
         return violations

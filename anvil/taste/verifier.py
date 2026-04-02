@@ -53,6 +53,8 @@ class TasteVerifier:
         violations.extend(self._check_border_radius(code, filepath))
         violations.extend(self._check_accessibility(code, filepath))
         violations.extend(self._check_hardcoded_values(code, filepath))
+        violations.extend(self._check_inline_styles(code, filepath))
+        violations.extend(self._check_design_formality(code, filepath))
         return violations
 
     def score(self, code: str) -> dict:
@@ -394,6 +396,170 @@ class TasteVerifier:
                 file=filepath, line=0,
                 found=f"{hardcoded_count} hardcoded",
                 expected="CSS variables",
+            ))
+
+        return violations
+
+    # ─── Inline Style Detection ───────────────────────────────────
+
+    # Layout properties that MUST live in the CSS registry, never inline
+    _LAYOUT_PROPERTIES = {
+        "width", "height", "min-width", "min-height", "max-width", "max-height",
+        "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
+        "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
+        "display", "position", "top", "right", "bottom", "left",
+        "flex", "flex-direction", "flex-wrap", "justify-content", "align-items",
+        "grid", "grid-template-columns", "grid-template-rows", "grid-column", "grid-row",
+        "gap", "row-gap", "column-gap",
+        "border-radius", "z-index", "overflow",
+    }
+
+    # Visual properties that should be in CSS but are lower severity
+    _VISUAL_PROPERTIES = {
+        "color", "background", "background-color", "opacity",
+        "border", "border-color", "box-shadow", "text-shadow",
+        "font-size", "font-weight", "font-family", "line-height",
+        "text-align", "text-decoration", "text-transform",
+    }
+
+    def _check_inline_styles(self, code: str, filepath: str) -> List[Violation]:
+        """Detect inline style=\"...\" attributes in HTML.
+
+        Layout properties in inline styles are errors.
+        Visual properties in inline styles are warnings.
+        Pure var() references with no layout props get a pass.
+        """
+        violations = []
+
+        # Match style="..." attributes (handles single and double quotes)
+        inline_pattern = re.compile(
+            r'style\s*=\s*["\']([^"\']*)["\']',
+            re.IGNORECASE,
+        )
+
+        lines = code.split("\n")
+        total_inline = 0
+        layout_inline = 0
+        visual_inline = 0
+
+        for line_num, line in enumerate(lines, 1):
+            for match in inline_pattern.finditer(line):
+                style_content = match.group(1).strip()
+                if not style_content:
+                    continue
+
+                total_inline += 1
+
+                # Parse individual properties from the inline style
+                props = [p.strip() for p in style_content.split(";") if p.strip()]
+                for prop in props:
+                    if ":" not in prop:
+                        continue
+                    prop_name = prop.split(":")[0].strip().lower()
+
+                    if prop_name in self._LAYOUT_PROPERTIES:
+                        layout_inline += 1
+                        violations.append(Violation(
+                            severity="error",
+                            category="inline_style",
+                            message=f"Layout property '{prop_name}' in inline style — "
+                                    f"must be in CSS registry. Inline: {prop.strip()}",
+                            file=filepath, line=line_num,
+                            found=f"style=\"...{prop_name}...\"",
+                            expected=f".class {{ {prop.strip()}; }}",
+                        ))
+                    elif prop_name in self._VISUAL_PROPERTIES:
+                        # Check if it uses var() — that's acceptable at info level
+                        prop_value = prop.split(":", 1)[1].strip()
+                        if "var(--" in prop_value:
+                            continue  # var() reference inline is tolerable
+                        visual_inline += 1
+                        violations.append(Violation(
+                            severity="warning",
+                            category="inline_style",
+                            message=f"Visual property '{prop_name}' hardcoded inline — "
+                                    f"should use CSS class or var(). Found: {prop.strip()}",
+                            file=filepath, line=line_num,
+                            found=f"style=\"...{prop_name}...\"",
+                            expected="CSS class or var(--token)",
+                        ))
+
+        # Summary violation if excessive inline styles
+        if total_inline > 3:
+            violations.append(Violation(
+                severity="error",
+                category="inline_style",
+                message=f"Excessive inline styles: {total_inline} found "
+                        f"({layout_inline} layout, {visual_inline} visual). "
+                        f"Move all styling to the CSS registry.",
+                file=filepath, line=0,
+                found=f"{total_inline} inline style attributes",
+                expected="0 inline styles (all in CSS)",
+            ))
+
+        return violations
+
+    # ─── 6D Taste Vector: Design Formality Gate ──────────────────
+
+    def _check_design_formality(self, code: str, filepath: str) -> List[Violation]:
+        """Use the 6D taste vector's formality dimension to gate var() usage.
+
+        High formality (>0.6) = most values MUST use var().
+        Low formality (<0.4) = some hardcoding tolerated.
+
+        Also uses density to check CSS complexity expectations.
+        """
+        violations = []
+        tv = getattr(self.tensor, 'taste_vector', None) or {}
+        if not tv:
+            return violations
+
+        formality = tv.get("formality", 0.5)
+        density = tv.get("density", 0.5)
+
+        # Count var() references vs hardcoded values
+        var_count = len(re.findall(r'var\(--[\w-]+\)', code))
+        hardcoded_colors = len(re.findall(r':\s*#[0-9a-fA-F]{3,8}', code))
+        hardcoded_px = len(re.findall(r':\s*\d+px', code))
+        total_hardcoded = hardcoded_colors + hardcoded_px
+        total_values = var_count + total_hardcoded
+
+        if total_values == 0:
+            return violations
+
+        var_ratio = var_count / total_values
+
+        # Formality gate: map formality to minimum var() ratio
+        # formality 0.9 → need 80%+ var() usage
+        # formality 0.7 → need 60%+ var() usage
+        # formality 0.5 → need 40%+ var() usage
+        # formality 0.3 → need 20%+ var() usage
+        required_ratio = max(0.1, (formality - 0.1) * 1.0)
+
+        if var_ratio < required_ratio:
+            violations.append(Violation(
+                severity="warning",
+                category="formality",
+                message=f"Design formality {formality:.1f} requires ≥{required_ratio:.0%} "
+                        f"var() usage, but found {var_ratio:.0%} "
+                        f"({var_count} var refs vs {total_hardcoded} hardcoded). "
+                        f"Replace hardcoded values with design tokens.",
+                file=filepath, line=0,
+                found=f"{var_ratio:.0%} var() usage",
+                expected=f"≥{required_ratio:.0%} var() usage",
+            ))
+
+        # Density check: count CSS rules vs expected complexity
+        rule_count = len(re.findall(r'\{[^}]+\}', code))
+        if density > 0.7 and rule_count < 5:
+            violations.append(Violation(
+                severity="info",
+                category="density",
+                message=f"Taste vector density {density:.1f} expects rich CSS, "
+                        f"but only {rule_count} rules found.",
+                file=filepath, line=0,
+                found=f"{rule_count} rules",
+                expected=f"Higher rule density",
             ))
 
         return violations

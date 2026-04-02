@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "name": "Creator Hub",
+    "vibe": "Midnight elegance bound by brushed gold accents",
+    "source": "Custom interface specification"
+  },
+  "palette": {
+    "bg_canvas": "#8A8A8A",
+    "bg_app": "#080808",
+    "bg_sidebar": "#0C0C0C",
+    "bg_card": "#121212",
+    "bg_card_elevated": "#161616",
+    
+    "gold_primary": "#E8D595",
+    "gold_dim": "rgba(232, 213, 149, 0.4)",
+    
+    "txt_pure": "#FFFFFF",
+    "txt_sec": "#8A8A8A",
+    "txt_muted": "#555555",
+    
+    "border_base": "rgba(255, 255, 255, 0.06)",
+    "border_light": "rgba(255, 255, 255, 0.1)",
+    "glass_mask": "rgba(255, 255, 255, 0.15)"
+  },
+  "geometry": {
+    "radius_surface": "24px",
+    "radius_card": "16px",
+    "radius_md": "12px",
+    "radius_sm": "6px",
+    "geometry_strictness": "4px"
+  },
+  "typography": {
+    "family_sans": "Inter, system-ui, sans-serif",
+    "weight_medium": "500",
+    "weight_semibold": "600",
+    "weight_bold": "700"
+  },
+  "effects": {
+    "shadow_app": "0 20px 60px rgba(0, 0, 0, 0.5)",
+    "shadow_inset": "inset 0 1px 1px rgba(255, 255, 255, 0.1)"
+  },
+  "taste_vector": {
+    "temperature": 0.3,
+    "density": 0.8,
+    "formality": 0.9,
+    "energy": 0.5,
+    "age": 0.7,
+    "price": 0.99
+  }
+}

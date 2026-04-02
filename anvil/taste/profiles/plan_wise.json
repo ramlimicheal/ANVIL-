@@ -1,53 +1,66 @@
 {
   "meta": {
     "name": "Plan Wise",
-    "vibe": "Dark glassmorphism, intricate nested boxes, vibrant neon green accents",
-    "source": "Extracted from Plan Wise dashboard screenshot"
+    "vibe": "Neon glow constrained by deep volumetric depths",
+    "source": "Custom interface specification"
   },
   "palette": {
-    "bg_layer_0": "#111213",
-    "bg_layer_1": "linear-gradient(135deg, rgba(30,30,34,0.6) 0%, rgba(15,15,18,0.6) 100%)",
-    "bg_layer_2": "rgba(255,255,255,0.03)",
-    "bg_layer_3": "rgba(255,255,255,0.06)",
-    "border_subtle": "rgba(255,255,255,0.05)",
-    "border_active": "rgba(255,255,255,0.12)",
-    "text_primary": "#FFFFFF",
-    "text_secondary": "#A0A0A5",
-    "text_tertiary": "#606065",
-    "accent_primary": "#B2FF2E",
-    "accent_secondary": "#B2FF2E",
-    "accent_glow": "rgba(178,255,46,0.3)",
-    "color_blue": "#3B82F6",
-    "color_purple": "#8B5CF6",
-    "color_pink": "#FF6B9D",
-    "color_orange": "#F59E0B",
-    "color_green": "#22C55E"
+    "bg_canvas": "#09090A",
+    "bg_modal_top": "rgba(28, 29, 31, 0.9)",
+    "bg_modal_btm": "rgba(18, 18, 20, 0.95)",
+    "bg_card": "rgba(255, 255, 255, 0.03)",
+    "bg_card_hover": "rgba(255, 255, 255, 0.06)",
+    "bg_input": "rgba(255, 255, 255, 0.05)",
+    "bg_glass": "rgba(0, 0, 0, 0.2)",
+    "bg_cmd": "rgba(0, 0, 0, 0.3)",
+    "bg_app": "#000000",
+    
+    "neon_lime": "#98FF00",
+    "neon_lime_alt": "#B1FF16",
+    "neon_lime_trans": "rgba(152, 255, 0, 0.2)",
+    "accent_blue": "#0A84FF",
+    
+    "txt_pure": "#FFFFFF",
+    "txt_main": "rgba(255, 255, 255, 0.9)",
+    "txt_sub": "rgba(255, 255, 255, 0.5)",
+    "txt_dim": "rgba(255, 255, 255, 0.3)",
+    
+    "border_light": "rgba(255, 255, 255, 0.05)",
+    "border_heavy": "rgba(255, 255, 255, 0.1)",
+    "divider": "rgba(255, 255, 255, 0.08)",
+    "ambient_glow": "rgba(255, 255, 255, 0.03)"
   },
   "geometry": {
-    "radius_surface": "24px",
-    "radius_inner": "16px",
-    "radius_button": "8px",
-    "radius_pill": "99px",
+    "radius_surface": "20px",
+    "radius_card": "14px",
+    "radius_input": "8px",
+    "radius_icon": "6px",
+    "radius_pill": "4px",
+    "radius_circle": "50%",
     "spacing_base": "4px"
   },
   "typography": {
-    "family_sans": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+    "family_sans": "Inter, system-ui, sans-serif",
+    "family_mono": "monospace",
     "weight_regular": "400",
     "weight_medium": "500",
     "weight_semibold": "600",
-    "weight_bold": "700"
+    "weight_bold": "700",
+    "weight_heavy": "800"
   },
   "effects": {
-    "shadow_sm": "0 2px 8px rgba(0,0,0,0.4)",
-    "shadow_md": "0 8px 32px rgba(0,0,0,0.6)",
-    "shadow_glass": "inset 0 1px 0 0 rgba(255,255,255,0.05)"
+    "shadow_modal": "0 40px 100px rgba(0, 0, 0, 0.8)",
+    "shadow_icon": "0 8px 24px rgba(0, 0, 0, 0.5)",
+    "blur_modal": "blur(40px)",
+    "blur_orb": "blur(6px)",
+    "transition": "0.2s"
   },
   "taste_vector": {
-    "temperature": 0.1,
-    "density": 0.9,
-    "formality": 0.8,
-    "energy": 0.6,
-    "age": 0.9,
+    "temperature": 0.8,
+    "density": 0.5,
+    "formality": 0.5,
+    "energy": 0.9,
+    "age": 0.5,
     "price": 0.95
   }
 }

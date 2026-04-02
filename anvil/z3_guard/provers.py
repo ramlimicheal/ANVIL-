@@ -1,6 +1,7 @@
 """
 Z3 Guard Provers — Mathematical verification of backend code logic.
 Uses Z3 SMT solver to prove or disprove code correctness.
+AST-first for Python; regex fallback for other languages.
 """
 
 import re
@@ -38,13 +39,170 @@ class ProofResult:
         return f"[{self.verdict}] {self.prover}: {self.message}{ce}"
 
 
+# ─── AST Extraction Layer ─────────────────────────────────────────
+# Eliminates false positives from regex matching inside strings,
+# comments, URLs, and decorators. Python-only; others use regex fallback.
+
+@dataclass
+class ASTDivision:
+    """A division operation extracted from Python AST."""
+    dividend: str
+    divisor: str
+    line: int
+
+@dataclass
+class ASTSubscript:
+    """An array/list subscript extracted from Python AST."""
+    container: str
+    index: str
+    line: int
+
+@dataclass
+class ASTMultiplication:
+    """A multiplication operation extracted from Python AST."""
+    left: str
+    right: str
+    line: int
+
+
+class _ASTExtractor(ast.NodeVisitor):
+    """Walks Python AST to extract operations that need Z3 verification.
+    
+    Tradeoff: Only works for Python. For JS/TS/Sol/Go, the regex fallback
+    remains. A proper multi-language solution would need tree-sitter.
+    """
+
+    def __init__(self):
+        self.divisions: List[ASTDivision] = []
+        self.subscripts: List[ASTSubscript] = []
+        self.multiplications: List[ASTMultiplication] = []
+
+    @staticmethod
+    def _node_name(node) -> Optional[str]:
+        """Extract a human-readable name from an AST node."""
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Attribute):
+            base = _ASTExtractor._node_name(node.value)
+            return f"{base}.{node.attr}" if base else node.attr
+        elif isinstance(node, ast.Constant):
+            return str(node.value)
+        return None
+
+    def visit_BinOp(self, node):
+        left_name = self._node_name(node.left)
+        right_name = self._node_name(node.right)
+
+        if isinstance(node.op, (ast.Div, ast.FloorDiv)) and right_name:
+            self.divisions.append(ASTDivision(
+                dividend=left_name or "?",
+                divisor=right_name,
+                line=node.lineno,
+            ))
+        elif isinstance(node.op, ast.Mult) and left_name and right_name:
+            self.multiplications.append(ASTMultiplication(
+                left=left_name,
+                right=right_name,
+                line=node.lineno,
+            ))
+
+        self.generic_visit(node)
+
+    def visit_Subscript(self, node):
+        container = self._node_name(node.value)
+        index = self._node_name(node.slice) if isinstance(node.slice, ast.Name) else None
+
+        if container and index:
+            self.subscripts.append(ASTSubscript(
+                container=container,
+                index=index,
+                line=node.lineno,
+            ))
+        self.generic_visit(node)
+
+
+def _is_python(filepath: str) -> bool:
+    """Check if file is Python based on extension."""
+    return filepath.lower().endswith((".py", ".pyw"))
+
+
+def _extract_ast(code: str) -> Optional[_ASTExtractor]:
+    """Try to parse code as Python AST. Returns None if parsing fails."""
+    try:
+        tree = ast.parse(code)
+        extractor = _ASTExtractor()
+        extractor.visit(tree)
+        return extractor
+    except SyntaxError:
+        return None
+
+
 class DivisionByZeroProver:
-    """Proves whether division-by-zero is possible."""
+    """Proves whether division-by-zero is possible.
+    
+    Uses AST for Python files (eliminates string/comment false positives).
+    Falls back to regex for non-Python files.
+    """
 
     def prove(self, code: str, filepath: str = "") -> List[ProofResult]:
         if not HAS_Z3:
             return [ProofResult("SKIP", "div_zero", "Z3 not installed")]
 
+        # Route: AST for Python, regex for everything else
+        if _is_python(filepath):
+            extractor = _extract_ast(code)
+            if extractor is not None:
+                return self._prove_ast(extractor, code, filepath)
+
+        return self._prove_regex(code, filepath)
+
+    def _prove_ast(self, extractor: _ASTExtractor, code: str, filepath: str) -> List[ProofResult]:
+        """AST-based division-by-zero detection for Python."""
+        results = []
+        lines = code.split("\n")
+
+        for div in extractor.divisions:
+            divisor_name = div.divisor
+
+            # Skip numeric literals
+            if divisor_name.isdigit() or divisor_name.replace(".", "", 1).isdigit():
+                if float(divisor_name) == 0:
+                    results.append(ProofResult(
+                        "BUG_FOUND", "div_zero",
+                        f"Division by literal zero",
+                        counterexample=f"{divisor_name} = 0",
+                        line=div.line, file=filepath,
+                    ))
+                continue
+
+            # Model: can divisor be zero?
+            s = Solver()
+            s.set("timeout", 3000)
+            divisor = Int(divisor_name)
+            s.add(divisor == 0)
+
+            # Check if there's any guard preventing zero
+            guard_found = False
+            for check_line in lines[max(0, div.line - 11):div.line - 1]:
+                if divisor_name in check_line and ("!= 0" in check_line or "> 0" in check_line
+                        or "== 0" in check_line or "is None" in check_line
+                        or f"if {divisor_name}" in check_line or f"if not {divisor_name}" in check_line):
+                    guard_found = True
+                    break
+
+            if not guard_found:
+                results.append(ProofResult(
+                    "BUG_FOUND", "div_zero",
+                    f"'{divisor_name}' can be zero — no guard found within 10 lines",
+                    counterexample=f"{divisor_name} = 0",
+                    confidence=0.90,  # Higher confidence than regex (no string false positives)
+                    line=div.line, file=filepath,
+                ))
+
+        return results
+
+    def _prove_regex(self, code: str, filepath: str) -> List[ProofResult]:
+        """Regex fallback for non-Python files."""
         results = []
         div_pattern = re.compile(r'(\w+)\s*/\s*(\w+)')
         lines = code.split("\n")

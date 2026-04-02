@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "name": "Clinical Real Estate",
+    "vibe": "Ultra-clean minimalism built on surgical micro-borders and negative space",
+    "source": "Custom interface specification"
+  },
+  "palette": {
+    "bg_app": "#FFFFFF",
+    "bg_layer": "#FAFAFA",
+    "bg_sidebar": "#F9F9F9",
+    "bg_input": "#F5F5F5",
+    
+    "border_light": "#EBEBEB",
+    "border_heavy": "#DDDDDD",
+    
+    "accent_dark": "#1A1A1A",
+    "accent_warning": "#FFB800",
+    "accent_success": "#A3CF88",
+    
+    "txt_pure": "#FFFFFF",
+    "txt_main": "#121212",
+    "txt_sec": "#717171",
+    "txt_muted": "#A0A0A0"
+  },
+  "geometry": {
+    "radius_surface": "24px",
+    "radius_card": "16px",
+    "radius_md": "12px",
+    "radius_sm": "8px",
+    "radius_pill": "50px",
+    "geometry_strictness": "4px"
+  },
+  "typography": {
+    "family_sans": "Inter, system-ui, sans-serif",
+    "weight_regular": "400",
+    "weight_medium": "500",
+    "weight_semibold": "600",
+    "weight_bold": "700"
+  },
+  "effects": {
+    "shadow_app": "0px 10px 40px rgba(0, 0, 0, 0.05)",
+    "shadow_card": "0px 2px 8px rgba(0, 0, 0, 0.02)"
+  },
+  "taste_vector": {
+    "temperature": 0.1,
+    "density": 0.5,
+    "formality": 0.9,
+    "energy": 0.3,
+    "age": 0.2,
+    "price": 1.0
+  }
+}

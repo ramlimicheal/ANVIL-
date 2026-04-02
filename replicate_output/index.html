@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANVIL Generated — Landing</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* ANVIL Auto-Generated Styles */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --accent-primary: #040406;
+  --bg-layer-0: #292929;
+  --bg-layer-1: #535354;
+  --bg-layer-2: #8D8D8E;
+  --text-primary: #E7E7E7;
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: JetBrains Mono, Fira Code, monospace;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+  --radius-surface: 24px;
+  --radius-inner: 16px;
+  --radius-button: 8px;
+  --radius-pill: 99px;
+  --gradient-primary: linear-gradient(to bottom, #010101 0%, #000000 100%);
+  --border: 1px solid rgba(255,255,255,0.15);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-layer-0, #292929);
+  color: var(--text-primary, #E7E7E7);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-24, 24px);
+}
+
+.section {
+  padding: var(--spacing-64, 64px) 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-48, 48px);
+}
+
+.section-header h2 {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--spacing-16, 16px);
+}
+
+.section-header p {
+  color: #8D8D8E;
+  font-size: 15px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-24, 24px); align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-24, 24px); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-32, 32px); }
+
+.card {
+  background: var(--bg-layer-1, #535354);
+  border-radius: var(--radius-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: var(--spacing-32, 32px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+
+.card-graphic {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-graphic .card-visual {
+  height: 180px;
+  background: var(--bg-layer-0, #292929);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.card-graphic .card-body {
+  padding: var(--spacing-24, 24px);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--text-primary, #E7E7E7);
+  color: var(--bg-layer-0, #292929);
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary, #E7E7E7);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+.badge {
+  background: var(--text-primary, #E7E7E7);
+  color: var(--bg-layer-0, #292929);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}
+
+.feature-item h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: var(--spacing-8, 8px);
+}
+
+.feature-item p {
+  color: #8D8D8E;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.divider-strip {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: var(--spacing-48, 48px) 0;
+}
+
+.price-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.price-card.popular {
+  background: linear-gradient(180deg, rgba(60,60,60,0.3) 0%, rgba(20,20,20,0.3) 100%);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.price-amount {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-8, 8px);
+}
+.price-amount .currency { font-size: 20px; margin-top: 6px; }
+.price-amount .figure { font-size: 48px; font-weight: 500; letter-spacing: -0.04em; }
+
+.price-billing { color: #8D8D8E; font-size: 13px; margin-bottom: var(--spacing-32, 32px); }
+
+.plan-name { color: #8D8D8E; font-size: 16px; margin-bottom: var(--spacing-16, 16px); }
+
+.price-features {
+  list-style: none;
+  flex-grow: 1;
+  margin-bottom: var(--spacing-32, 32px);
+}
+.price-features li { font-size: 13px; margin-bottom: var(--spacing-12, 12px); color: #8D8D8E; }
+.price-features li::before { content: '✓ '; opacity: 0.6; }
+
+.hero-content h1 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--spacing-24, 24px);
+}
+
+.hero-content p { color: #8D8D8E; font-size: 15px; line-height: 1.6; margin-bottom: var(--spacing-32, 32px); max-width: 480px; }
+
+.chart-card {
+  position: relative;
+  height: 340px;
+  padding: var(--spacing-32, 32px);
+  overflow: hidden;
+}
+
+
+/* Utility */
+.text-center { text-align: center; }
+.text-muted { color: #8D8D8E; }
+.mb-0 { margin-bottom: 0; }
+.full-width { width: 100%; justify-content: center; }
+
+@media (max-width: 1024px) {
+  /* Stack hero content vertically */
+  .hero { flex-direction: column; text-align: center; padding: 48px 24px; }
+  /* Features 3-col → 2-col */
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Pricing cards 3 → 1 col */
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  /* Collapse nav to hamburger menu */
+  .navbar { flex-direction: column; gap: 0; }
+  /* Hide desktop nav links */
+  .nav-links { display: none; }
+  /* Show mobile menu button */
+  .hamburger { display: flex; }
+  /* Footer columns stack */
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  /* Reduce hero heading size */
+  .hero h1 { font-size: 28px; line-height: 1.2; }
+  /* Features → single column */
+  .features-grid { grid-template-columns: 1fr; }
+  /* CTA full width */
+  .cta { padding: 32px 16px; }
+  /* CTA button full width */
+  .cta .button { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="grid-3">
+      <div class="card card-graphic">
+        <div class="card-visual">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+            <rect x="12" y="12" width="40" height="40" rx="8" />
+            <circle cx="32" cy="32" r="8" fill="rgba(255,255,255,0.1)"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Automated reporting</h3>
+          <p class="text-muted">Automated reporting gives you fast, accurate insights with zero manual effort.</p>
+        </div>
+      </div>
+      <div class="card card-graphic">
+        <div class="card-visual">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+            <rect x="12" y="12" width="40" height="40" rx="8" />
+            <circle cx="32" cy="32" r="8" fill="rgba(255,255,255,0.1)"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Multi-platform compatibility</h3>
+          <p class="text-muted">Multi-platform compatibility lets your tools work smoothly across any device or system.</p>
+        </div>
+      </div>
+      <div class="card card-graphic">
+        <div class="card-visual">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+            <rect x="12" y="12" width="40" height="40" rx="8" />
+            <circle cx="32" cy="32" r="8" fill="rgba(255,255,255,0.1)"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Secure and compliant</h3>
+          <p class="text-muted">Secure and compliant means your data stays protected and meets required standards.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="grid-2">
+        <div class="hero-content">
+          <h1>AI Solutions Engineered<br>for Maximum Performance</h1>
+          <p>Discover intelligent tools that streamline operations, reduce manual work, and help your business move faster.</p>
+          <a href="#" class="btn btn-primary">Explore More ↗</a>
+        </div>
+        <div class="card chart-card">
+          <div style="margin-bottom: var(--spacing-16, 16px);">
+            <div style="font-size: 28px; font-weight: 500;">1,632</div>
+            <div class="text-muted" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Clicks</div>
+          </div>
+          <svg viewBox="0 0 400 180" preserveAspectRatio="none" style="width:100%; height: 140px; position: absolute; bottom: 0; left: 0;">
+            <path d="M0 140 C 60 140,80 60,160 100 C 230 150,260 40,330 70 C 370 85,400 130,400 130 L 400 180 L 0 180 Z" fill="rgba(255,255,255,0.03)"/>
+            <path d="M0 140 C 60 140,80 60,160 100 C 230 150,260 40,330 70 C 370 85,400 130,400 130" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+            <circle cx="270" cy="55" r="4" fill="#fff"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="divider-strip">
+    <div class="container">
+      <div class="grid-4">
+        <div class="feature-item">
+          <h4>AI Automation Systems</h4>
+          <p>Streamline your business processes with workflow automation powered by AI.</p>
+        </div>
+        <div class="feature-item">
+          <h4>AI Development</h4>
+          <p>Build tailored AI products that fit your business goals and internal operations.</p>
+        </div>
+        <div class="feature-item">
+          <h4>Predictive Analytics</h4>
+          <p>Forecast market trends, customer behavior, and sales with powerful AI.</p>
+        </div>
+        <div class="feature-item">
+          <h4>Chatbots & Assistants</h4>
+          <p>Enhance customer support with 24/7 AI bots that understand and respond.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Find the Perfect Plan<br>for Your Business</h2>
+        <p>Unlock your full potential with flexible pricing</p>
+      </div>
+      <div class="grid-3">
+        <div class="card price-card">
+          <div class="plan-name">Free</div>
+          <div class="price-amount">
+            <span class="currency">$</span>
+            <span class="figure">0</span>
+          </div>
+          <div class="price-billing">per user/month, billed annually</div>
+          <ul class="price-features">
+            <li>Unlimited Projects</li>
+            <li>Share with 5 team members</li>
+            <li>AI integration</li>
+          </ul>
+          <a href="#" class="btn btn-outline full-width">Get Started</a>
+        </div>
+        <div class="card price-card popular">
+          <div class="badge" style="position: absolute; top: 24px; right: 24px;">Popular</div>
+          <div class="plan-name">Standard</div>
+          <div class="price-amount">
+            <span class="currency">$</span>
+            <span class="figure">85</span>
+          </div>
+          <div class="price-billing">per user/month, billed annually</div>
+          <ul class="price-features">
+            <li>Unlimited Projects</li>
+            <li>AI integration</li>
+            <li>Migration service</li>
+            <li>Collaborations & permissions</li>
+          </ul>
+          <a href="#" class="btn btn-primary full-width">Get Started</a>
+        </div>
+        <div class="card price-card">
+          <div class="plan-name">Premium</div>
+          <div class="price-amount">
+            <span class="currency">$</span>
+            <span class="figure">120</span>
+          </div>
+          <div class="price-billing">per user/month, billed annually</div>
+          <ul class="price-features">
+            <li>Sales volume up to $5k/mo</li>
+            <li>Return customer rate 2.5%</li>
+            <li>Fully flexible permissions</li>
+            <li>Fast support with your own CSM</li>
+          </ul>
+          <a href="#" class="btn btn-outline full-width">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-header mb-0">
+        <h2>Seamless Integrations<br>for Every Workflow</h2>
+        <p>Bring all your systems together with seamless AI-powered<br>integrations designed for speed and simplicity.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

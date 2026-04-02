@@ -1,0 +1,30 @@
+@media (max-width: 1024px) {
+  /* Stack hero content vertically */
+  .hero { flex-direction: column; text-align: center; padding: 48px 24px; }
+  /* Features 3-col → 2-col */
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Pricing cards 3 → 1 col */
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  /* Collapse nav to hamburger menu */
+  .navbar { flex-direction: column; gap: 0; }
+  /* Hide desktop nav links */
+  .nav-links { display: none; }
+  /* Show mobile menu button */
+  .hamburger { display: flex; }
+  /* Footer columns stack */
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  /* Reduce hero heading size */
+  .hero h1 { font-size: 28px; line-height: 1.2; }
+  /* Features → single column */
+  .features-grid { grid-template-columns: 1fr; }
+  /* CTA full width */
+  .cta { padding: 32px 16px; }
+  /* CTA button full width */
+  .cta .button { width: 100%; }
+}

@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "page_type": "landing",
+    "confidence": 0.58,
+    "image_size": [
+      512,
+      1024
+    ],
+    "is_dark_mode": true
+  },
+  "palette": {
+    "bg_layer_0": "#292929",
+    "bg_layer_1": "#535354",
+    "bg_layer_2": "#8D8D8E",
+    "text_primary": "#E7E7E7",
+    "accent_primary": "#040406"
+  },
+  "typography": {
+    "family_sans": "Inter, system-ui, sans-serif",
+    "family_mono": "JetBrains Mono, Fira Code, monospace",
+    "scale": [
+      14,
+      16,
+      20,
+      24
+    ],
+    "scale_ratio": 1.2,
+    "scale_name": "Minor Third",
+    "base_size": "16px",
+    "weights": {
+      "weight_regular": "400",
+      "weight_medium": "500",
+      "weight_semibold": "600",
+      "weight_bold": "700"
+    }
+  },
+  "geometry": {
+    "spacing_base": "4px",
+    "spacing_scale": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      40,
+      48,
+      64,
+      96
+    ],
+    "radius_surface": "24px",
+    "radius_inner": "16px",
+    "radius_button": "8px",
+    "radius_pill": "99px"
+  },
+  "effects": {
+    "gradient_primary": "linear-gradient(to bottom, #010101 0%, #000000 100%)",
+    "border": "1px solid rgba(255,255,255,0.15)"
+  },
+  "grid": {
+    "columns": 1,
+    "gutter": 0,
+    "margin_left": 0,
+    "margin_right": 0,
+    "column_width": 0
+  },
+  "components": {
+    "components": [
+      {
+        "type": "container",
+        "count": 2,
+        "avg_size": "161x19",
+        "instances": [
+          [
+            40,
+            288,
+            165,
+            19
+          ],
+          [
+            177,
+            565,
+            158,
+            19
+          ]
+        ]
+      },
+      {
+        "type": "badge",
+        "count": 2,
+        "avg_size": "59x11",
+        "instances": [
+          [
+            197,
+            742,
+            61,
+            12
+          ],
+          [
+            197,
+            777,
+            58,
+            11
+          ]
+        ]
+      },
+      {
+        "type": "button",
+        "count": 1,
+        "avg_size": "201x40",
+        "instances": [
+          [
+            40,
+            243,
+            201,
+            40
+          ]
+        ]
+      },
+      {
+        "type": "avatar",
+        "count": 1,
+        "avg_size": "32x33",
+        "instances": [
+          [
+            240,
+            24,
+            32,
+            33
+          ]
+        ]
+      }
+    ],
+    "total_instances": 6,
+    "types_found": [
+      "container",
+      "badge",
+      "button",
+      "avatar"
+    ]
+  },
+  "icons": {
+    "icons": [
+      {
+        "bounds": [
+          102,
+          24,
+          29,
+          29
+        ],
+        "size": 32,
+        "style": "filled",
+        "library": "phosphor",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          280,
+          257,
+          33,
+          23
+        ],
+        "size": 32,
+        "style": "filled",
+        "library": "phosphor",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          52,
+          698,
+          30,
+          22
+        ],
+        "size": 32,
+        "style": "filled",
+        "library": "phosphor",
+        "confidence": 0.7
+      },
+      {
+        "bounds": [
+          390,
+          34,
+          21,
+          22
+        ],
+        "size": 20,
+        "style": "filled",
+        "library": "lucide",
+        "confidence": 0.7
+      }
+    ],
+    "dominant_style": "filled",
+    "suggested_library": "phosphor",
+    "icon_size": 32,
+    "total": 4
+  },
+  "responsive": {
+    "page_type": "landing",
+    "breakpoints": {
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "container_max_width": "510px",
+    "rules": [
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".navbar",
+        "behavior": "Collapse nav to hamburger menu",
+        "css": "flex-direction: column; gap: 0;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".nav-links",
+        "behavior": "Hide desktop nav links",
+        "css": "display: none;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".hamburger",
+        "behavior": "Show mobile menu button",
+        "css": "display: flex;"
+      },
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".hero",
+        "behavior": "Stack hero content vertically",
+        "css": "flex-direction: column; text-align: center; padding: 48px 24px;"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".hero h1",
+        "behavior": "Reduce hero heading size",
+        "css": "font-size: 28px; line-height: 1.2;"
+      },
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".features-grid",
+        "behavior": "Features 3-col \u2192 2-col",
+        "css": "grid-template-columns: repeat(2, 1fr);"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".features-grid",
+        "behavior": "Features \u2192 single column",
+        "css": "grid-template-columns: 1fr;"
+      },
+      {
+        "breakpoint": "lg",
+        "max_width": 1024,
+        "selector": ".pricing-grid",
+        "behavior": "Pricing cards 3 \u2192 1 col",
+        "css": "grid-template-columns: 1fr; max-width: 400px; margin: 0 auto;"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".cta",
+        "behavior": "CTA full width",
+        "css": "padding: 32px 16px;"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".cta .button",
+        "behavior": "CTA button full width",
+        "css": "width: 100%;"
+      },
+      {
+        "breakpoint": "md",
+        "max_width": 768,
+        "selector": ".footer-grid",
+        "behavior": "Footer columns stack",
+        "css": "grid-template-columns: 1fr;"
+      }
+    ]
+  },
+  "taste_vector": {
+    "temperature": 0.2,
+    "density": 0.67,
+    "formality": 0.7,
+    "energy": 0.9,
+    "age": 0.8,
+    "price": 0.7
+  }
+}

@@ -152,12 +152,46 @@ def _verify_output(
 
         # Build a StyleTensor from extracted design system
         ds_dict = ds.to_dict()
+
+        # Flatten typography: StyleTensor expects Dict[str, str], but
+        # ExtractedTypography.to_dict() nests weights as a sub-dict and
+        # includes lists (scale). Flatten to prevent unhashable type errors.
+        raw_typo = ds_dict.get("typography", {})
+        flat_typo = {}
+        for k, v in raw_typo.items():
+            if isinstance(v, dict):
+                # Inline nested dict (e.g. weights → weight_regular: "400")
+                for sub_k, sub_v in v.items():
+                    flat_typo[sub_k] = str(sub_v)
+            elif isinstance(v, (list, tuple)):
+                # Skip non-string iterables (scale list) — not needed by verifier
+                continue
+            else:
+                flat_typo[k] = str(v)
+
+        # Flatten geometry: spacing_scale is a list, strip it
+        raw_geom = ds_dict.get("geometry", {})
+        flat_geom = {}
+        for k, v in raw_geom.items():
+            if isinstance(v, (list, tuple, dict)):
+                continue
+            flat_geom[k] = str(v)
+
+        # Flatten effects: ensure all values are strings
+        raw_fx = ds_dict.get("effects", {})
+        flat_fx = {}
+        for k, v in raw_fx.items():
+            if isinstance(v, (dict, list, tuple)):
+                continue
+            flat_fx[k] = str(v)
+
         tensor = StyleTensor(
             name="extracted",
             palette=ds_dict.get("palette", {}),
-            geometry=ds_dict.get("geometry", {}),
-            typography=ds_dict.get("typography", {}),
-            effects=ds_dict.get("effects", {}),
+            geometry=flat_geom,
+            typography=flat_typo,
+            effects=flat_fx,
+            taste_vector=ds_dict.get("taste_vector", {}),
         )
         verifier = TasteVerifier(tensor)
 
@@ -168,8 +202,9 @@ def _verify_output(
         report.taste_score = taste_result["score"]
         report.violations = [str(v) for v in taste_result["violations"][:20]]
     except Exception as e:
+        import traceback
         report.taste_score = 5.0
-        report.violations = [f"TASTE error: {e}"]
+        report.violations = [f"TASTE error: {e}\n{traceback.format_exc()}"]
 
     # Composite score (TASTE-weighted for now; vision comparison needs rendered screenshot)
     report.composite_score = round(report.taste_score, 1)

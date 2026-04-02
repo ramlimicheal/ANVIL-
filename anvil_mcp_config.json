@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "anvil": {
+      "command": "python3",
+      "args": ["/Users/apple/Desktop/Alpha/ANVIL/anvil/mcp_server.py"],
+      "env": {}
+    }
+  }
+}

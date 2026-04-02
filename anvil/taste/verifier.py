@@ -731,10 +731,8 @@ class TasteVerifier:
         total_hardcoded = hardcoded_colors + hardcoded_px
         total_values = var_count + total_hardcoded
 
-        if total_values == 0:
-            return violations
-
-        var_ratio = var_count / total_values
+        # Formality ratio check (only if there are values to measure)
+        var_ratio = var_count / total_values if total_values > 0 else -1
 
         # Formality gate: map formality to minimum var() ratio
         # formality 0.9 → need 80%+ var() usage
@@ -743,7 +741,7 @@ class TasteVerifier:
         # formality 0.3 → need 20%+ var() usage
         required_ratio = max(0.1, (formality - 0.1) * 1.0)
 
-        if var_ratio < required_ratio:
+        if var_ratio >= 0 and var_ratio < required_ratio:
             violations.append(Violation(
                 severity="warning",
                 category="formality",

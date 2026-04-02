@@ -152,6 +152,14 @@ class _DataflowAnalyzer(ast.NodeVisitor):
 
     @staticmethod
     def _node_name(node) -> Optional[str]:
+        # Extend base _node_name to handle Call nodes like len(x)
+        if isinstance(node, ast.Call):
+            func_name = _ASTExtractor._node_name(node.func)
+            if func_name and node.args:
+                arg_name = _ASTExtractor._node_name(node.args[0])
+                if arg_name:
+                    return f"{func_name}({arg_name})"
+            return f"{func_name}()" if func_name else None
         return _ASTExtractor._node_name(node)
 
     def visit_FunctionDef(self, node):

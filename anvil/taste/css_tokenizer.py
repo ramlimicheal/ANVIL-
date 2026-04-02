@@ -157,15 +157,29 @@ class CSSTokenizer:
         self.tokens.append(CSSToken(TokenType.AT_RULE, text.strip(), start_line, start_col))
 
     def _read_text(self):
-        """Read selector or property:value text."""
+        """Read selector or property:value text, including inline quoted strings."""
         start_line = self.line
         start_col = self.col
         text = ''
         while self.pos < len(self.code) and self.code[self.pos] not in ('{', '}', ';', '\n'):
             if self.code[self.pos] == '/' and self._peek(1) == '*':
                 break
+            # Consume quoted strings inline (e.g., font-family: 'Inter', sans-serif)
             if self.code[self.pos] in ('"', "'"):
-                break
+                quote = self.code[self.pos]
+                text += quote
+                self._advance()
+                while self.pos < len(self.code) and self.code[self.pos] != quote:
+                    if self.code[self.pos] == '\\':
+                        text += self.code[self.pos]
+                        self._advance()
+                    if self.pos < len(self.code):
+                        text += self.code[self.pos]
+                        self._advance()
+                if self.pos < len(self.code):
+                    text += self.code[self.pos]  # closing quote
+                    self._advance()
+                continue
             text += self.code[self.pos]
             self._advance()
         text = text.strip()
@@ -252,6 +266,12 @@ class CSSTokenizer:
 
         return rules
 
+    @staticmethod
+    def _strip_quoted(value: str) -> str:
+        """Remove quoted string contents from a CSS value.
+        e.g., '"#FF0000 is red"' → '""' so hex inside strings isn't matched."""
+        return re.sub(r"""(['"]).*?\1""", r'\1\1', value)
+
     def get_colors(self) -> List[Tuple[str, int]]:
         """Extract color values from declarations (NOT from comments/strings/URLs)."""
         decls = self.parse_declarations()
@@ -260,9 +280,11 @@ class CSSTokenizer:
         rgb_re = re.compile(r'rgba?\([^)]+\)')
 
         for decl in decls:
-            for m in hex_re.finditer(decl.value):
+            # Strip quoted strings so colors inside content:"..." are excluded
+            clean_val = self._strip_quoted(decl.value)
+            for m in hex_re.finditer(clean_val):
                 colors.append((m.group(0), decl.line))
-            for m in rgb_re.finditer(decl.value):
+            for m in rgb_re.finditer(clean_val):
                 colors.append((m.group(0), decl.line))
 
         return colors

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "anvil"
+version = "0.1.0"
+description = "Forge AI Code Into Production Steel — The verification layer for AI-generated code"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Ramli T. Michael"}]
+requires-python = ">=3.10"
+dependencies = [
+    "z3-solver>=4.12.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "watchdog>=3.0.0",
+]
+
+[project.optional-dependencies]
+vision = ["Pillow>=10.0", "scikit-learn>=1.3"]
+dev = ["pytest>=7.0", "httpx>=0.24"]
+
+[project.scripts]
+anvil = "anvil.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["anvil*"]

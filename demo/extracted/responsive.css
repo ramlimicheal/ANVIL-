@@ -1,0 +1,8 @@
+@media (max-width: 640px) {
+  /* Auth card full width on mobile */
+  .auth-card { max-width: 100%; margin: 16px; border-radius: 16px; }
+  /* Full width inputs */
+  .auth-card input { width: 100%; }
+  /* Reduce card padding */
+  .auth-card { padding: 24px 16px; }
+}

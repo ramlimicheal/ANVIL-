@@ -17,7 +17,7 @@ try:
 except ImportError:
     HAS_FASTAPI = False
 
-from .config import AnvilConfig, detect_file_layer
+from .config import AnvilConfig, detect_file_layer, anvil_grade, MAX_CODE_SIZE, MAX_TEXT_SIZE
 from .taste.tensor import StyleTensor, load_profile
 from .taste.verifier import TasteVerifier
 from .taste.scorer import AestheticScorer
@@ -29,14 +29,30 @@ from .watcher.guard import AnvilGuard
 # ─── Pydantic Models ──────────────────────────────────────────
 
 if HAS_FASTAPI:
+    from pydantic import field_validator
+
     class VerifyRequest(BaseModel):
         code: str
         filepath: str = ""
         profile: str = "linear"
 
+        @field_validator("code")
+        @classmethod
+        def code_not_too_large(cls, v):
+            if len(v) > MAX_CODE_SIZE:
+                raise ValueError(f"Code exceeds max size ({MAX_CODE_SIZE} bytes)")
+            return v
+
     class CompressRequest(BaseModel):
         text: str
         level: str = "medium"
+
+        @field_validator("text")
+        @classmethod
+        def text_not_too_large(cls, v):
+            if len(v) > MAX_TEXT_SIZE:
+                raise ValueError(f"Text exceeds max size ({MAX_TEXT_SIZE} bytes)")
+            return v
 
     class BatchRequest(BaseModel):
         files: list  # List of {code, filepath} dicts
@@ -193,16 +209,8 @@ def create_app(config: Optional[AnvilConfig] = None) -> "FastAPI":
             "taste_score": result.taste_score,
             "z3_score": result.z3_score,
             "passed": result.passed,
-            "grade": _grade(combined),
+            "grade": anvil_grade(combined),
         }
-
-    def _grade(score: float) -> str:
-        if score >= 9.0: return "A+"
-        if score >= 8.0: return "A"
-        if score >= 7.0: return "B"
-        if score >= 6.0: return "C"
-        if score >= 4.0: return "D"
-        return "F"
 
     return app
 

@@ -240,8 +240,24 @@ PROFILES: Dict[str, dict] = {
 
 
 def load_profile(name: str) -> StyleTensor:
-    """Load a built-in design profile as a StyleTensor."""
+    """Load a design profile as a StyleTensor.
+    
+    Resolution order:
+    1. Check profiles/ directory for {name}.json
+    2. Fall back to built-in PROFILES dict
+    """
+    # Check for JSON file in profiles/ directory
+    profiles_dir = Path(__file__).parent / "profiles"
+    json_path = profiles_dir / f"{name}.json"
+    if json_path.exists():
+        return StyleTensor.from_file(str(json_path))
+
+    # Fall back to built-in profiles
     if name not in PROFILES:
-        available = ", ".join(PROFILES.keys())
-        raise ValueError(f"Unknown profile '{name}'. Available: {available}")
+        available = list(PROFILES.keys())
+        # Also list JSON profiles
+        if profiles_dir.exists():
+            for p in profiles_dir.glob("*.json"):
+                available.append(p.stem)
+        raise ValueError(f"Unknown profile '{name}'. Available: {', '.join(available)}")
     return StyleTensor.from_json(PROFILES[name])

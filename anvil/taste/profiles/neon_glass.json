@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "name": "Neon Glass",
+    "vibe": "Dark mode, glassmorphism, precise, sleek, neon accents",
+    "source": "Extracted from dark mode offer type modal screenshot"
+  },
+  "palette": {
+    "bg_layer_0": "#050505",
+    "bg_layer_1": "#121214",
+    "bg_layer_2": "#1A1A1C",
+    "border_subtle": "rgba(255,255,255,0.06)",
+    "border_active": "rgba(255,255,255,0.12)",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "#8A8A93",
+    "text_tertiary": "#55555A",
+    "accent_primary": "#00FF66",
+    "accent_secondary": "#00CC52",
+    "accent_glow": "rgba(0,255,102,0.15)",
+    "surface_glass": "rgba(26,26,28,0.6)",
+    "icon_bg": "rgba(255,255,255,0.03)"
+  },
+  "geometry": {
+    "radius_surface": "32px",
+    "radius_inner": "16px",
+    "radius_button": "12px",
+    "radius_pill": "99px",
+    "spacing_base": "4px"
+  },
+  "typography": {
+    "family_sans": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+    "family_mono": "JetBrains Mono, monospace",
+    "weight_regular": "400",
+    "weight_medium": "500",
+    "weight_semibold": "600",
+    "weight_bold": "700"
+  },
+  "effects": {
+    "shadow_sm": "0 4px 24px rgba(0,0,0,0.4)",
+    "shadow_md": "0 8px 32px rgba(0,0,0,0.6)",
+    "shadow_glass": "inset 0 1px 0 0 rgba(255,255,255,0.05)",
+    "transition": "all 200ms ease",
+    "transition_fast": "all 100ms ease"
+  },
+  "taste_vector": {
+    "temperature": 0.1,
+    "density": 0.5,
+    "formality": 0.8,
+    "energy": 0.7,
+    "age": 0.9,
+    "price": 0.95
+  }
+}

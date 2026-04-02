@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Wise</title>
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ─── Palette: Plan Wise Dark Glassmorphism ─── */
+  :root {
+    --bg-0: #111213;
+    --bg-card: linear-gradient(135deg, rgba(30,30,34,0.6) 0%, rgba(15,15,18,0.6) 100%);
+    --bg-surface: rgba(255,255,255,0.03);
+    --bg-surface-2: rgba(255,255,255,0.06);
+    --border-subtle: rgba(255,255,255,0.05);
+    --border-active: rgba(255,255,255,0.12);
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0A5;
+    --text-tertiary: #606065;
+    --accent: #B2FF2E;
+    --accent-glow: rgba(178,255,46,0.3);
+    --accent-dim: rgba(178,255,46,0.12);
+    --color-blue: #3B82F6;
+    --color-purple: #8B5CF6;
+    --color-pink: #FF6B9D;
+    --color-orange: #F59E0B;
+    --color-green: #22C55E;
+    --radius-surface: 24px;
+    --radius-inner: 16px;
+    --radius-button: 8px;
+    --radius-pill: 99px;
+    --font-sans: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    --shadow-md: 0 8px 32px rgba(0,0,0,0.6);
+    --shadow-glass: inset 0 1px 0 0 rgba(255,255,255,0.05);
+    --transition: all 200ms ease;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-0);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Main Card ─── */
+  .card {
+    width: 480px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-surface);
+    box-shadow: var(--shadow-md), var(--shadow-glass);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    overflow: hidden;
+  }
+
+  /* ─── Header / Branding ─── */
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 32px 24px;
+  }
+
+  .logo {
+    width: 72px;
+    height: 72px;
+    background: var(--bg-surface-2);
+    border-radius: var(--radius-inner);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 6px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .logo .dot {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .logo .dot.dim {
+    background: rgba(178,255,46,0.35);
+  }
+
+  .logo .dot.empty {
+    background: transparent;
+  }
+
+  .header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ─── Wizard Steps ─── */
+  .wizard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 0 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-inner);
+    overflow: hidden;
+  }
+
+  .step {
+    padding: 16px;
+  }
+
+  .step + .step {
+    border-left: 1px solid var(--border-subtle);
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .step-title .icon {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  /* ─── Event List (Step 1) ─── */
+  .event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .event-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: var(--radius-button);
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: var(--transition);
+  }
+
+  .event-item.selected {
+    background: var(--bg-surface-2);
+  }
+
+  .event-item .event-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  .event-item .event-icon.green {
+    background: var(--accent);
+    color: var(--bg-0);
+  }
+
+  .event-item .event-icon.blue {
+    background: var(--color-blue);
+    color: var(--text-primary);
+  }
+
+  .event-item .event-icon.purple {
+    background: var(--color-purple);
+    color: var(--text-primary);
+  }
+
+  .event-item .check {
+    color: var(--accent);
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--bg-0);
+    margin-left: auto;
+  }
+
+  .tag {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+  }
+
+  .tag.linked {
+    color: var(--accent);
+  }
+
+  /* ─── Member List (Step 2) ─── */
+  .member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: var(--radius-button);
+    font-size: 13px;
+    transition: var(--transition);
+  }
+
+  .member-item.selected {
+    background: var(--bg-surface-2);
+  }
+
+  .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bg-surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+    overflow: hidden;
+  }
+
+  .avatar.pink { background: var(--color-pink); }
+  .avatar.blue { background: var(--color-blue); }
+  .avatar.orange { background: var(--color-orange); }
+  .avatar.green { background: var(--color-green); }
+  .avatar.purple { background: var(--color-purple); }
+
+  .member-item .check-mark {
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  /* ─── Location Row ─── */
+  .location-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    margin: 8px 16px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .location-row .checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-active);
+    border-radius: 4px;
+  }
+
+  .location-row .loc-name {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  /* ─── Action Chips ─── */
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-button);
+    background: var(--bg-surface);
+    font-size: 13px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .chip .chip-label {
+    color: var(--text-tertiary);
+    font-size: 12px;
+  }
+
+  .chip .chip-icon {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  /* ─── Toolbar ─── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .toolbar-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .toolbar-item:first-child {
+    color: var(--text-primary);
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-subtle);
+  }
+
+  /* ─── Command Input ─── */
+  .command-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .command-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+    flex-shrink: 0;
+  }
+
+  .command-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    font-family: var(--font-sans);
+    outline: none;
+  }
+
+  .send-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .send-btn:hover { color: var(--text-primary); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="dot dim"></div>
+      <div class="dot"></div>
+      <div class="dot dim"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot dim"></div>
+      <div class="dot"></div>
+      <div class="dot dim"></div>
+    </div>
+    <h1>Plan Wise</h1>
+    <p>Meet Plan Wise, your smart<br>dashboard for easy planning</p>
+  </div>
+
+  <!-- Wizard: Two Steps -->
+  <div class="wizard">
+    <!-- Step 1: New Event -->
+    <div class="step">
+      <div class="step-label">Step 1</div>
+      <div class="step-title">
+        <span class="icon">⊞</span>
+        <span>New event</span>
+      </div>
+      <div class="event-list">
+        <div class="event-item selected">
+          <span class="check">✓</span>
+          <span class="event-icon green">□</span>
+          <span>Conference</span>
+          <span class="badge">TEAM</span>
+        </div>
+        <div class="event-item">
+          <span class="event-icon blue">■</span>
+          <span>Conference call</span>
+          <span class="tag">+ Add</span>
+        </div>
+        <div class="event-item">
+          <span class="event-icon purple">▣</span>
+          <span>Online meeting</span>
+          <span class="tag linked">🔗 Linked</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Add Member -->
+    <div class="step">
+      <div class="step-label">Step 2</div>
+      <div class="step-title">
+        <span class="icon">👥</span>
+        <span>Add member</span>
+      </div>
+      <div class="member-list">
+        <div class="member-item">
+          <div class="avatar blue">A</div>
+          <span>Ava sterling</span>
+        </div>
+        <div class="member-item selected">
+          <div class="avatar pink">O</div>
+          <span>Olivia rhye</span>
+          <span class="check-mark">✓</span>
+        </div>
+        <div class="member-item">
+          <div class="avatar purple">L</div>
+          <span>Lila hart</span>
+        </div>
+        <div class="member-item selected">
+          <div class="avatar orange">O</div>
+          <span>Olivia rhye</span>
+          <span class="check-mark">✓</span>
+        </div>
+        <div class="member-item">
+          <div class="avatar green">E</div>
+          <span>Ella Watson</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Location -->
+  <div class="location-row">
+    <div class="checkbox"></div>
+    <span>🏢</span>
+    <span class="loc-name">Brewed Bliss</span>
+    <span>New York</span>
+  </div>
+
+  <!-- Action Chips -->
+  <div class="chips">
+    <div class="chip">
+      <span class="chip-icon">📅</span>
+      <span>Schedule</span>
+      <span class="chip-label">Set</span>
+      <span>▴</span>
+    </div>
+    <div class="chip">
+      <span class="chip-icon">📋</span>
+      <span>Active</span>
+      <span class="chip-label">Daily</span>
+      <span>›</span>
+    </div>
+    <div class="chip">
+      <span class="chip-icon">🗓</span>
+      <span>Schedule</span>
+      <span class="chip-label">Set</span>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-item">
+      <span>+</span>
+      <span>Add tools</span>
+    </div>
+    <div class="toolbar-divider"></div>
+    <div class="toolbar-item">
+      <span>⚙</span>
+      <span>AI Setup</span>
+    </div>
+    <div class="toolbar-item">
+      <span>☆</span>
+      <span>Quick</span>
+    </div>
+  </div>
+
+  <!-- Command Input -->
+  <div class="command-bar">
+    <div class="command-dot"></div>
+    <input class="command-input" type="text" value="/Set | Daily" readonly>
+    <div class="send-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

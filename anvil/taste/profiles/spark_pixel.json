@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "name": "Spark Pixel",
+    "vibe": "Warm Minimal, Earthy, Professional Dashboard",
+    "source": "Extracted from reference screenshot — warm white UI with sage/olive accents, clean data visualization"
+  },
+  "palette": {
+    "bg_layer_0": "#F7F7F5",
+    "bg_layer_1": "#FFFFFF",
+    "bg_layer_2": "#EDEDEA",
+    "border_subtle": "#E8E8E4",
+    "border_active": "#8B9A4B",
+    "text_primary": "#1A1A1A",
+    "text_secondary": "#7A7A72",
+    "text_tertiary": "#ADADAD",
+    "accent_primary": "#8B9A4B",
+    "accent_secondary": "#6B7A3B",
+    "accent_glow": "#EEF1E3",
+    "success": "#4CAF50",
+    "warning": "#FF9800",
+    "error": "#EF4444",
+    "info": "#3B82F6",
+    "bar_new": "#1A1A1A",
+    "bar_existing": "#C8C8C0",
+    "bar_inactive": "#D1D1C7",
+    "bar_highlight": "#E2E2DC",
+    "surface_card": "#FFFFFF",
+    "surface_hover": "#F0F0EC",
+    "status_refund": "#9E9E9E"
+  },
+  "geometry": {
+    "radius_surface": "12px",
+    "radius_inner": "8px",
+    "radius_button": "8px",
+    "radius_pill": "99px",
+    "spacing_base": "4px"
+  },
+  "typography": {
+    "family_sans": "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+    "family_mono": "JetBrains Mono, Menlo, Monaco, monospace",
+    "weight_regular": "400",
+    "weight_medium": "500",
+    "weight_semibold": "600",
+    "weight_bold": "700"
+  },
+  "effects": {
+    "shadow_sm": "0 1px 2px 0 rgba(0,0,0,0.04)",
+    "shadow_md": "0 2px 12px rgba(0,0,0,0.04)",
+    "transition": "all 150ms ease",
+    "transition_fast": "all 100ms ease"
+  },
+  "taste_vector": {
+    "temperature": 0.55,
+    "density": 0.30,
+    "formality": 0.75,
+    "energy": 0.30,
+    "age": 0.85,
+    "price": 0.70
+  }
+}

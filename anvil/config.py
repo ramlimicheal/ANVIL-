@@ -139,6 +139,22 @@ class AnvilConfig:
             json.dump(data, f, indent=2)
 
 
+# ─── Shared Utilities ─────────────────────────────────────────
+
+MAX_CODE_SIZE = 500_000  # 500KB max for code verification
+MAX_TEXT_SIZE = 200_000  # 200KB max for compression
+
+
+def anvil_grade(score: float) -> str:
+    """Convert a numeric score (0-10) to a letter grade."""
+    if score >= 9.0: return "A+"
+    if score >= 8.0: return "A"
+    if score >= 7.0: return "B"
+    if score >= 6.0: return "C"
+    if score >= 4.0: return "D"
+    return "F"
+
+
 def detect_file_layer(filepath: str) -> str:
     """Route a file to the correct ANVIL layer based on extension."""
     ext = os.path.splitext(filepath)[1].lower()

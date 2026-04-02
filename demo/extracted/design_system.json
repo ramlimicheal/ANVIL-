@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "page_type": "login",
+    "confidence": 0.33,
+    "image_size": [
+      400,
+      600
+    ],
+    "is_dark_mode": true
+  },
+  "palette": {
+    "bg_layer_0": "#221E1E",
+    "bg_layer_1": "#141212",
+    "text_primary": "#B2FF2E"
+  },
+  "typography": {
+    "family_sans": "Inter, system-ui, sans-serif",
+    "family_mono": "JetBrains Mono, Fira Code, monospace",
+    "scale": [
+      14,
+      16,
+      20,
+      24
+    ],
+    "scale_ratio": 1.2,
+    "scale_name": "Minor Third",
+    "base_size": "16px",
+    "weights": {
+      "weight_regular": "400",
+      "weight_medium": "500",
+      "weight_semibold": "600",
+      "weight_bold": "700"
+    }
+  },
+  "geometry": {
+    "spacing_base": "4px",
+    "spacing_scale": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      40,
+      48,
+      64,
+      96
+    ],
+    "radius_surface": "24px",
+    "radius_inner": "16px",
+    "radius_button": "8px",
+    "radius_pill": "99px"
+  },
+  "effects": {
+    "shadow_sm": "0px 1px 1px 0px rgba(0,0,0,0.50)",
+    "shadow_md": "",
+    "border": "1px solid rgba(255,255,255,0.15)"
+  },
+  "grid": {
+    "columns": 1,
+    "gutter": 0,
+    "margin_left": 0,
+    "margin_right": 0,
+    "column_width": 0
+  },
+  "components": {
+    "components": [
+      {
+        "type": "button",
+        "count": 1,
+        "avg_size": "126x46",
+        "instances": [
+          [
+            137,
+            97,
+            126,
+            46
+          ]
+        ]
+      }
+    ],
+    "total_instances": 1,
+    "types_found": [
+      "button"
+    ]
+  },
+  "icons": {
+    "icons": [],
+    "dominant_style": "outline",
+    "suggested_library": "lucide",
+    "icon_size": 24,
+    "total": 0
+  },
+  "responsive": {
+    "page_type": "login",
+    "breakpoints": {
+      "sm": 640,
+      "md": 768,
+      "lg": 1024,
+      "xl": 1280,
+      "2xl": 1536
+    },
+    "container_max_width": "121px",
+    "rules": [
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".auth-card",
+        "behavior": "Auth card full width on mobile",
+        "css": "max-width: 100%; margin: 16px; border-radius: 16px;"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".auth-card input",
+        "behavior": "Full width inputs",
+        "css": "width: 100%;"
+      },
+      {
+        "breakpoint": "sm",
+        "max_width": 640,
+        "selector": ".auth-card",
+        "behavior": "Reduce card padding",
+        "css": "padding: 24px 16px;"
+      }
+    ]
+  },
+  "taste_vector": {
+    "temperature": 0.8,
+    "density": 0.67,
+    "formality": 0.7,
+    "energy": 0.9,
+    "age": 0.8,
+    "price": 0.7
+  }
+}

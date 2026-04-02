@@ -197,15 +197,20 @@ class TasteVerifier:
     def _check_spacing(self, code: str, filepath: str) -> List[Violation]:
         violations = []
         grid = self.tensor.get_spacing_grid()
-        # Match pixel values in CSS properties
+        # Only check micro-spacing properties — not structural layout dimensions
         spacing_props = re.compile(
-            r'(margin|padding|gap|top|right|bottom|left|width|height|inset)'
+            r'(margin|padding|gap|top|right|bottom|left|inset)'
             r'[^:]*:\s*(-?\d+)px',
             re.IGNORECASE,
         )
 
         lines = code.split("\n")
         for line_num, line in enumerate(lines, 1):
+            # Skip media queries and CSS variables — these are structural, not micro-spacing
+            stripped = line.strip()
+            if stripped.startswith('@media') or stripped.startswith('--'):
+                continue
+
             for match in spacing_props.finditer(line):
                 px_val = int(match.group(2))
                 if px_val == 0:
@@ -238,6 +243,9 @@ class TasteVerifier:
         for line_num, line in enumerate(lines, 1):
             for match in font_pattern.finditer(line):
                 fonts_str = match.group(1).strip().rstrip(";")
+                # Skip CSS variable references — they're indirections, not literal font names
+                if 'var(' in fonts_str:
+                    continue
                 declared_fonts = [f.strip().strip("'\"") for f in fonts_str.split(",")]
                 for font in declared_fonts:
                     if font.lower() not in allowed_lower and font.lower() not in (

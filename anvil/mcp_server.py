@@ -111,17 +111,11 @@ def handle_anvil_score(code: str, filepath: str = "", profile: str = "linear") -
 
     combined = round(sum(scores) / max(len(scores), 1), 1) if scores else 0
 
-    def grade(s):
-        if s >= 9.0: return "A+"
-        if s >= 8.0: return "A"
-        if s >= 7.0: return "B"
-        if s >= 6.0: return "C"
-        if s >= 4.0: return "D"
-        return "F"
+    from anvil.config import anvil_grade
 
     return {
         "anvil_score": combined,
-        "grade": grade(combined),
+        "grade": anvil_grade(combined),
         "taste_score": result.taste_score,
         "z3_score": result.z3_score,
         "passed": result.passed,

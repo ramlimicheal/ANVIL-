@@ -131,9 +131,13 @@ class IntegerOverflowProver:
                 s.add(ULT(result_bv, a))
 
                 # Check for overflow guard
+                context_lines = lines[max(0, line_num - 5):line_num + 2]
                 has_guard = any(
-                    "SafeMath" in l or "checked" in l or "unchecked" not in l
-                    for l in lines[max(0, line_num - 5):line_num + 2]
+                    "SafeMath" in l or "checked {" in l or "require(" in l
+                    for l in context_lines
+                ) or any(
+                    "unchecked {" in l  # Solidity unchecked block = intentional wrap
+                    for l in context_lines
                 )
 
                 if s.check() == sat and not has_guard:

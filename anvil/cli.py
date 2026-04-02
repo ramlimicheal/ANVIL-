@@ -221,15 +221,9 @@ def cmd_score(args):
 
     combined = round(sum(scores) / max(len(scores), 1), 1) if scores else 0
 
-    def grade(s):
-        if s >= 9.0: return "A+"
-        if s >= 8.0: return "A"
-        if s >= 7.0: return "B"
-        if s >= 6.0: return "C"
-        if s >= 4.0: return "D"
-        return "F"
+    from .config import anvil_grade
 
-    print(f"\n  ⚒️  ANVIL SCORE: {combined}/10 ({grade(combined)})")
+    print(f"\n  ⚒️  ANVIL SCORE: {combined}/10 ({anvil_grade(combined)})")
     print(result.summary())
 
 
@@ -248,6 +242,127 @@ def cmd_daemon(args):
     run_daemon(port=port, config=config)
 
 
+def cmd_vision(args):
+    """Compare generated HTML against a reference screenshot."""
+    import os
+    if len(args) < 2:
+        print("Usage: anvil vision <reference.png> <generated.html> [--diff output.png]")
+        print("       anvil vision <reference.png> <screenshot.png> [--diff output.png]")
+        return
+
+    reference = args[0]
+    target = args[1]
+    diff_path = None
+    if "--diff" in args:
+        idx = args.index("--diff")
+        if idx + 1 < len(args):
+            diff_path = args[idx + 1]
+
+    viewport = (1440, 900)
+    if "--viewport" in args:
+        idx = args.index("--viewport")
+        if idx + 1 < len(args):
+            parts = args[idx + 1].split("x")
+            viewport = (int(parts[0]), int(parts[1]))
+
+    from .vision.compare import VisualComparator
+
+    comparator = VisualComparator()
+
+    # If target is HTML, capture screenshot first
+    generated_png = target
+    tmp_screenshot = None
+    if target.endswith((".html", ".htm")):
+        from .vision.capture import capture_html_to_png
+        tmp_screenshot = target.replace(".html", "_anvil_capture.png").replace(".htm", "_anvil_capture.png")
+        print(f"  📸 Capturing screenshot: {os.path.basename(target)}")
+        print(f"     Viewport: {viewport[0]}x{viewport[1]}")
+        capture_html_to_png(target, tmp_screenshot, viewport=viewport)
+        generated_png = tmp_screenshot
+        print(f"     Saved: {tmp_screenshot}")
+
+    # Compare
+    print(f"\n  🔍 Comparing against reference...")
+    if not diff_path:
+        import os
+        base, ext = os.path.splitext(reference)
+        diff_path = f"{base}_anvil_diff{ext if ext else '.png'}"
+
+    result = comparator.compare(reference, generated_png, diff_output_path=diff_path)
+
+    # Output
+    print(f"\n{result.summary()}")
+
+    # Detailed region report
+    if result.region_scores:
+        print(f"\n  Region Analysis ({len(result.region_scores)} zones):")
+        sorted_regions = sorted(result.region_scores, key=lambda r: r.ssim)
+        for r in sorted_regions:
+            if r.ssim >= 0.90:
+                icon = "✅"
+            elif r.ssim >= 0.70:
+                icon = "⚠️"
+            else:
+                icon = "❌"
+            print(f"    {icon} {r.label:20s} SSIM={r.ssim:.4f}")
+
+
+def cmd_extract(args):
+    """Extract design system from a screenshot."""
+    if not args:
+        print("Usage: anvil extract <screenshot.png> [--output ./output/]")
+        return
+
+    image_path = args[0]
+    output_dir = "./anvil_output"
+    if "--output" in args:
+        idx = args.index("--output")
+        if idx + 1 < len(args):
+            output_dir = args[idx + 1]
+
+    from .extract.compiler import extract_design_system, compile_design_system
+
+    ds = extract_design_system(image_path)
+    print("\n  Compiling design system...")
+    compile_design_system(ds, output_dir)
+    print(f"\n  ✅ Design system extracted to: {output_dir}/")
+
+
+def cmd_replicate(args):
+    """Full pipeline: screenshot → design system → verified code."""
+    if not args:
+        print("Usage: anvil replicate <screenshot.png> [--output ./output/]")
+        return
+
+    image_path = args[0]
+    output_dir = "./anvil_output"
+    if "--output" in args:
+        idx = args.index("--output")
+        if idx + 1 < len(args):
+            output_dir = args[idx + 1]
+
+    from .generate.loop import replicate
+    replicate(image_path, output_dir)
+
+
+def cmd_generate(args):
+    """Generate code from an existing design system JSON."""
+    if not args:
+        print("Usage: anvil generate <design_system.json> [--output ./output/]")
+        return
+
+    ds_path = args[0]
+    output_dir = "./anvil_output"
+    if "--output" in args:
+        idx = args.index("--output")
+        if idx + 1 < len(args):
+            output_dir = args[idx + 1]
+
+    print(f"  Loading design system from: {ds_path}")
+    print(f"  [NOTE] Code generation from JSON requires a prior 'anvil extract' run.")
+    print(f"  Use 'anvil replicate <screenshot>' for the full pipeline.")
+
+
 def main():
     """ANVIL CLI entry point."""
     if len(sys.argv) < 2:
@@ -259,6 +374,10 @@ def main():
         print("    anvil compress <file>         — Semantic token compression")
         print("    anvil guard [path]            — Watch files, verify on save")
         print("    anvil score <file>            — Combined ANVIL score")
+        print("    anvil vision <ref> <target>   — Pixel-level visual comparison")
+        print("    anvil extract <screenshot>    — Extract design system from image")
+        print("    anvil replicate <screenshot>  — Full pipeline: extract + generate + verify")
+        print("    anvil generate <ds.json>      — Generate code from design system")
         print("    anvil daemon [--port 8084]    — Start REST API server")
         print("")
         return
@@ -275,6 +394,10 @@ def main():
         "compress": cmd_compress,
         "guard": cmd_guard,
         "score": cmd_score,
+        "vision": cmd_vision,
+        "extract": cmd_extract,
+        "replicate": cmd_replicate,
+        "generate": cmd_generate,
         "daemon": cmd_daemon,
     }
 
